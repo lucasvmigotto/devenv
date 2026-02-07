@@ -19,11 +19,11 @@ jobs:
     strategy:
       matrix:
         version:
-          - 3.14
-          - 3.13
+          - "3.14"
+          - "3.13"
         distro:
           - trixie
-          - noble
+          - bookworm
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -47,8 +47,9 @@ jobs:
         with:
           file: .docker/python.Dockerfile
           context: .
-          push: false
-          tags: python-${{ matrix.version }}-${{ matrix.distro }}
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:python-${{ matrix.version }}-${{ matrix.distro }}
           build-args: |
             _VERSION=${{ matrix.version }}
             _DISTRO=${{ matrix.distro }}
@@ -59,4 +60,4 @@ jobs:
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: false
+          push-to-registry: true
