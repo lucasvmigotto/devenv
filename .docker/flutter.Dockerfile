@@ -17,7 +17,9 @@ RUN curl -sfo "${_FLUTTER_TAR}" "${_FLUTTER_ARTIFACT}" \
 FROM mcr.microsoft.com/devcontainers/base:${_DISTRO}
 
 ARG _USERNAME="vscode"
-ARG _PUB_CACHE="/.pub-cache"
+ARG _HOME="/home/${_USERNAME}"
+
+ARG _PUB_CACHE="${_HOME}/.pub-cache"
 
 COPY --from=flutter /flutter/ /
 
@@ -25,7 +27,7 @@ ENV PUB_CACHE="${_PUB_CACHE}"
 
 ENV PATH="${PATH}:/flutter/bin/"
 
-RUN mkdir "${_PUB_CACHE}" \
+RUN mkdir -p "${_PUB_CACHE}" \
     && chown -R "${_USERNAME}:${_USERNAME}" "${_PUB_CACHE}"
 
 USER "${_USERNAME}"
