@@ -1,12 +1,9 @@
 # syntax=docker/dockerfile:1.7-labs
 
-ARG _VERSION="1.26.0"
+ARG _VERSION="1.26"
 ARG _DISTRO="trixie"
 
 FROM golang:${_VERSION}-${_DISTRO} AS go
-
-RUN go install github.com/air-verse/air@latest \
-    && go install golang.org/x/tools/gopls@latest
 
 FROM mcr.microsoft.com/devcontainers/base:${_DISTRO}
 

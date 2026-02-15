@@ -1,11 +1,14 @@
-name: Codefusion - Push to GitHub Container Registry
+name: CommandBox - Push to GitHub Container Registry
 
 on:
   push:
     branches: ["main"]
+    paths:
+      - "**/commandbox.Dockerfile"
+      - "**/commandbox.yml"
 
 env:
-  REGISTRY: ghcr.io
+  REGISTRY_GH: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
@@ -29,10 +32,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Log in to the Container registry
+      - name: Log in to Docker Hub Container registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKER_HUB_PAT }}
+
+      - name: Log in to GitHub Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_GH }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -40,17 +49,20 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: |
+            ${{ env.REGISTRY_GH }}
+            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v3
         with:
-          file: .docker/codefusion.Dockerfile
+          file: .docker/commandbox.Dockerfile
           context: .
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:codefusion-${{ matrix.version }}-${{ matrix.distro }}
+            ${{ env.IMAGE_NAME }}:commandbox-${{ matrix.version }}-${{ matrix.distro }}
+            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:commandbox-${{ matrix.version }}-${{ matrix.distro }}
           build-args: |
             _VERSION=${{ matrix.version }}
             _DISTRO=${{ matrix.distro }}
@@ -59,6 +71,6 @@ jobs:
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v3
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-name: ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
