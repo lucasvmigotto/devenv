@@ -8,8 +8,9 @@ FROM ghcr.io/astral-sh/uv:python${_VERSION}-${_DISTRO} AS uv
 FROM mcr.microsoft.com/devcontainers/base:${_DISTRO}
 
 ARG _USERNAME="vscode"
+ARG _HOME="/home/${_USERNAME}"
 
-ARG _VIRTUAL_ENV="/.venv"
+ARG _VIRTUAL_ENV="/${_HOME}/.venv"
 
 COPY --from=uv /usr/local/bin/uv /usr/local/bin/uvx /bin/
 

@@ -1,11 +1,11 @@
-name: Python - Push to GitHub Container Registry
+name: Go - Push to GitHub Container Registry
 
 on:
   push:
     branches: ["main"]
     paths:
-      - "**/python.Dockerfile"
-      - "**/python.yml"
+      - "**/go.Dockerfile"
+      - "**/go.yml"
 
 env:
   REGISTRY_GH: ghcr.io
@@ -22,9 +22,9 @@ jobs:
     strategy:
       matrix:
         version:
-          - "3.14"
-          - "3.13"
-          - "3.12"
+          - "1.26"
+          - "1.25"
+          - "1.24"
         distro:
           - trixie
           - bookworm
@@ -57,12 +57,12 @@ jobs:
         id: push
         uses: docker/build-push-action@v3
         with:
-          file: .docker/python.Dockerfile
+          file: .docker/go.Dockerfile
           context: .
           push: true
           tags: |
-            ${{ env.IMAGE_NAME }}:python-${{ matrix.version }}-${{ matrix.distro }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:python-${{ matrix.version }}-${{ matrix.distro }}
+            ${{ env.IMAGE_NAME }}:go-${{ matrix.version }}-${{ matrix.distro }}
+            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:go-${{ matrix.version }}-${{ matrix.distro }}
           build-args: |
             _VERSION=${{ matrix.version }}
             _DISTRO=${{ matrix.distro }}
