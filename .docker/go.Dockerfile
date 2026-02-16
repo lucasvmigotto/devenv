@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.7-labs
+# syntax=docker/dockerfile:1
 
 ARG _VERSION="1.26"
 ARG _DISTRO="trixie"
