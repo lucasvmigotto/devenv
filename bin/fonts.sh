@@ -2,60 +2,65 @@
 
 set -e
 
-function _font_downloader() {
+function _font-installer() {
 
-    local _NERDFONT_NAME=${1:?"Font name not informed"}
-    local _NERDFONT_VERSION=${2:-"v3.4.0"}
-    local _NERDFONT_BASE=${3:-"https://github.com/ryanoasis/nerd-fonts/releases/download/"}
-    local _DESTINATION=${4:-"/tmp/fonts"}
+    local fontUrl=${1:?"Font URL must be informed"}
+    local folder=${2:?"Font folder must be informed"}
+    local tmpDestination=${3:-"/tmp/fonts"}
 
-    local _FONT_URL="${_NERDFONT_BASE}/${_NERDFONT_VERSION}/${_NERDFONT_NAME}.zip"
-    local _FONT_NAME=$(basename $_FONT_URL | tr '[:upper:]' '[:lower:]' )
+    local fontName=$(basename "$fontUrl" | tr '[:upper:]' '[:lower:]' )
 
-    if ! curl -sfIo /dev/null $_FONT_URL; then
+    if ! curl -sfIo /dev/null "$fontUrl"; then
         echo "Invalid font URL"
         exit 1
     fi
 
-    mkdir -p "${_DESTINATION}"
+    mkdir -p "${tmpDestination}"
 
-    local _FONT_PATH="${_DESTINATION}/${_FONT_NAME}"
+    local fontPath="${tmpDestination}/${fontName}"
 
-    curl -sSLo "${_FONT_PATH}" $_FONT_URL
+    curl -sSLo "${fontPath}" "$fontUrl"
 
-    [[ -f "${_FONT_PATH}" ]] \
-        && echo "${_FONT_PATH}" \
-        || (echo "Download failed for ${_FONT_NAME}" && exit 1)
-
-}
-
-function _font_installer() {
-
-    local _FONT_PATH=${1:?"Font path not informed"}
-    local _NERDFONT_VERSION=${2:-"v3.4.0"}
-    local _NERDFONT_BASE=${3:-"https://github.com/ryanoasis/nerd-fonts/releases/download/"}
-    local _FONTS_FOLDER=${4:-"/usr/share/fonts"}
-    local _FONTS_PATTERN=${5:-"*.[ot]tf"}
-
-    if [[ ! -d "${_FONTS_FOLDER}" ]]; then
-        mkdir -p "${_FONTS_FOLDER}"
-    fi
+    [[ ! -f "${fontPath}" ]] \
+        && (echo "Download failed for ${fontName}" && exit 1)
 
     unzip -oqq \
-        "${_FONT_PATH}" \
-        "${_FONTS_PATTERN}" \
-        -d "${_FONTS_FOLDER}"
+        "${fontPath}" \
+        "*.[ot]tf" \
+        -d "${folder}"
 
     fc-cache
+
+    rm -rf "${fontPath}"
 
 }
 
 function main() {
 
-    for font in $@; do
-        _font_installer $(_font_downloader "${font}")
+    local fonts
+    local nerdfontBase="https://github.com/ryanoasis/nerd-fonts/releases/download/"
+    local nerdfontVersion="v3.4.0"
+    local fontFolder="/usr/share/fonts"
+    local OPTIND
+
+    while getopts "f:b:v:h" opt; do
+        case $opt in
+            f) fonts+=("${OPTARG}") ;;
+            b) nerdfontBase="${OPTARG}" ;;
+            v) nerdfontVersion="${OPTARG}" ;;
+            h) fontFolder="${OPTARG}" ;;
+            ?) echo "Invalid ${opt} option provided" ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    for font in ${fonts[@]}; do
+        local url=
+        _font-installer \
+            "${nerdfontBase}/${nerdfontVersion}/${font}.zip" \
+            "${fontFolder}"
     done
 
 }
 
-main $@ # FiraCode FiraMono RobotoMono
+main $@
