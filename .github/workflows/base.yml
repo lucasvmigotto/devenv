@@ -1,8 +1,8 @@
-name: Base - Push to GitHub Container Registry
+name: Base
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
     paths:
       - "**/base.Dockerfile"
       - "**/base.yml"
@@ -28,7 +28,7 @@ jobs:
           - "bookworm"
           - "bullseye"
         variant:
-          - "-slim"
+          - "slim"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5

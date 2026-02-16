@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:1
 
-ARG _DISTRO="trixie"
+ARG _DISTRO_NAME="debian"
+ARG _DISTRO_VERSION="trixie"
+ARG _DISTRO_VARIANT="slim"
 
 FROM alpine/curl:8.17.0 AS flutter
 
@@ -14,9 +16,9 @@ RUN curl -sfo "${_FLUTTER_TAR}" "${_FLUTTER_ARTIFACT}" \
     && mkdir /flutter \
     && tar -xf "${_FLUTTER_TAR}" -C /flutter
 
-FROM mcr.microsoft.com/devcontainers/base:${_DISTRO}
+FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}-${_DISTRO_VARIANT}
 
-ARG _USERNAME="vscode"
+ARG _USERNAME="developer"
 ARG _HOME="/home/${_USERNAME}"
 
 ARG _PUB_CACHE="${_HOME}/.pub-cache"

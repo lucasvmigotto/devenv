@@ -1,11 +1,17 @@
-name: Go - Push to GitHub Container Registry
+name: Go
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
     paths:
       - "**/go.Dockerfile"
       - "**/go.yml"
+      - "**/base.Dockerfile"
+      - "**/base.yml"
+  workflow_run:
+    workflows: ["Base"]
+    types: [completed]
+    branches: [main]
 
 env:
   REGISTRY_GH: ghcr.io
@@ -14,6 +20,7 @@ env:
 jobs:
   push-docker-image:
     runs-on: ubuntu-24.04
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
       packages: write
@@ -25,9 +32,13 @@ jobs:
           - "1.26"
           - "1.25"
           - "1.24"
-        distro:
+        distro-name:
+          - debian
+        distro-version:
           - trixie
           - bookworm
+        distro-variant:
+          - slim
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -61,11 +72,13 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.IMAGE_NAME }}:go-${{ matrix.version }}-${{ matrix.distro }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:go-${{ matrix.version }}-${{ matrix.distro }}
+            ${{ env.IMAGE_NAME }}:go-${{ matrix.version }}-${{ matrix.distro-version }}
+            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:go-${{ matrix.version }}-${{ matrix.distro-version }}
           build-args: |
             _VERSION=${{ matrix.version }}
-            _DISTRO=${{ matrix.distro }}
+            _DISTRO_NAME=${{ matrix.distro-name }}
+            _DISTRO_VERSION=${{ matrix.distro-version }}
+            _DISTRO_VARIANT=${{ matrix.distro-variant }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Generate artifact attestation
