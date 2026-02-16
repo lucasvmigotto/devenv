@@ -1,14 +1,18 @@
 # syntax=docker/dockerfile:1
 
 ARG _VERSION="1.26"
-ARG _DISTRO="trixie"
+ARG _DISTRO_NAME="debian"
+ARG _DISTRO_VERSION="trixie"
+ARG _DISTRO_VARIANT="slim"
 
 FROM golang:${_VERSION}-${_DISTRO} AS go
 
-FROM mcr.microsoft.com/devcontainers/base:${_DISTRO}
+RUN go install golang.org/x/tools/gopls@latest
+
+FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}-${_DISTRO_VARIANT}
 
 ARG _VERSION="1.26.0"
-ARG _USERNAME="vscode"
+ARG _USERNAME="developer"
 
 ARG _HOME="/home/${_USERNAME}"
 

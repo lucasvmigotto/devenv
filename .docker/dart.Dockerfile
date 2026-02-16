@@ -1,13 +1,15 @@
 # syntax=docker/dockerfile:1
 
 ARG _VERSION="3.10-sdk"
-ARG _DISTRO="trixie"
+ARG _DISTRO_NAME="debian"
+ARG _DISTRO_VERSION="trixie"
+ARG _DISTRO_VARIANT="slim"
 
 FROM dart:${_VERSION} AS dart
 
-FROM mcr.microsoft.com/devcontainers/base:${_DISTRO}
+FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}-${_DISTRO_VARIANT}
 
-ARG _USERNAME="vscode"
+ARG _USERNAME="developer"
 ARG _HOME="/home/${_USERNAME}"
 
 ARG _PUB_CACHE="/${_HOME}/.pub-cache"
