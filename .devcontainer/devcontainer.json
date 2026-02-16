@@ -1,13 +1,11 @@
 {
 	"name": "devenv",
-	"build": {
-        "dockerfile": "Dockerfile",
-        "context": ".."
-    },
+    "image": "ghcr.io/lucasvmigotto/devenv:debian-trixie-slim",
 	"runArgs": [
         "--rm",
         "--env-file", ".env"
     ],
+    "remoteUser": "developer",
     "mounts": [
         {
             "source": "/var/run/docker.sock",
@@ -24,6 +22,7 @@
 	"features": {
         "ghcr.io/devcontainers/features/docker-in-docker:2": {}
 	},
+    "postCreateCommand": "curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/nektos/act/master/install.sh | bash",
     "customizations": {
 		"vscode": {
 			"extensions": [
