@@ -1,13 +1,15 @@
 # syntax=docker/dockerfile:1
 
 ARG _VERSION="27"
-ARG _DISTRO="trixie"
+ARG _DISTRO_NAME="debian"
+ARG _DISTRO_VERSION="trixie"
+ARG _DISTRO_VARIANT="slim"
 
 FROM openjdk:${_VERSION}-ea-jdk AS java
 
-FROM mcr.microsoft.com/devcontainers/base:${_DISTRO}
+FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}-${_DISTRO_VARIANT}
 
-ARG _USERNAME="vscode"
+ARG _USERNAME="developer"
 ARG _HOME="/home/${_USERNAME}"
 
 ARG _VERSION="27"
