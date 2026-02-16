@@ -14,5 +14,5 @@ insert_final_newline = true
 [*.{yml,yaml,md}]
 indent_size = 2
 
-[*.{Dockerfile}]
+[*.{Dockerfile,sh}]
 indent_size = 4
