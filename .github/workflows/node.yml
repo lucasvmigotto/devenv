@@ -1,11 +1,11 @@
-name: CommandBox
+name: Node
 
 on:
   push:
     branches: [main]
     paths:
-      - "**/commandbox.Dockerfile"
-      - "**/commandbox.yml"
+      - "**/node.Dockerfile"
+      - "**/node.yml"
       - "**/base.Dockerfile"
       - "**/base.yml"
   workflow_run:
@@ -29,9 +29,8 @@ jobs:
     strategy:
       matrix:
         version:
-          - "2025"
-          - "2023"
-          - "2021"
+          - "25.6.1"
+          - "24.13.1"
         distro-name:
           - debian
         distro-version:
@@ -61,19 +60,19 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: |
-            ${{ env.REGISTRY_GH }}
+            ${{ env.IMAGE_NAME }}
             ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v3
         with:
-          file: .docker/commandbox.Dockerfile
+          file: .docker/node.Dockerfile
           context: .
           push: true
           tags: |
-            ${{ env.IMAGE_NAME }}:commandbox-${{ matrix.version }}-${{ matrix.distro-version }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:commandbox-${{ matrix.version }}-${{ matrix.distro-version }}
+            ${{ env.IMAGE_NAME }}:node-${{ matrix.version }}-${{ matrix.distro-version }}
+            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:node-${{ matrix.version }}-${{ matrix.distro-version }}
           build-args: |
             _VERSION=${{ matrix.version }}
             _DISTRO_NAME=${{ matrix.distro-name }}
