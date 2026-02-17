@@ -6,12 +6,6 @@ on:
     paths:
       - "**/python.Dockerfile"
       - "**/python.yml"
-      - "**/base.Dockerfile"
-      - "**/base.yml"
-  workflow_run:
-    workflows: ["Base"]
-    types: [completed]
-    branches: [main]
 
 env:
   REGISTRY_GH: ghcr.io
@@ -20,7 +14,6 @@ env:
 jobs:
   push-docker-image:
     runs-on: ubuntu-24.04
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
       packages: write
