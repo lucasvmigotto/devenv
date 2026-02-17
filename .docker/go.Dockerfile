@@ -5,7 +5,7 @@ ARG _DISTRO_NAME="debian"
 ARG _DISTRO_VERSION="trixie"
 ARG _DISTRO_VARIANT="slim"
 
-FROM golang:${_VERSION}-${_DISTRO} AS go
+FROM golang:${_VERSION}-${_DISTRO_VERSION} AS go
 
 RUN go install golang.org/x/tools/gopls@latest
 
