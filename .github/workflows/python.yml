@@ -2,36 +2,45 @@ name: Python
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
       - "**/python.Dockerfile"
       - "**/python.yml"
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - "Base"
+    types:
+      - completed
+    branches:
+      - main
 
 env:
   REGISTRY_GH: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  push-docker-image:
+  python-debian:
     runs-on: ubuntu-24.04
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
       packages: write
       attestations: write
       id-token: write
+    env:
+      devenv: python
+      distro-name: debian
     strategy:
       matrix:
         version:
           - "3.14"
           - "3.13"
           - "3.12"
-        distro-name:
-          - debian
         distro-version:
           - trixie
           - bookworm
-        distro-variant:
-          - slim
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -61,17 +70,16 @@ jobs:
         id: push
         uses: docker/build-push-action@v3
         with:
-          file: .docker/python.Dockerfile
+          file: .docker/${{ env.devenv }}.Dockerfile
           context: .
           push: true
           tags: |
-            ${{ env.IMAGE_NAME }}:python-${{ matrix.version }}-${{ matrix.distro-version }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:python-${{ matrix.version }}-${{ matrix.distro-version }}
+            ${{ env.IMAGE_NAME }}/${{ env.devenv }}:${{ matrix.version }}-${{ matrix.distro-version }}
+            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}/${{ env.devenv }}:${{ matrix.version }}-${{ matrix.distro-version }}
           build-args: |
             _VERSION=${{ matrix.version }}
-            _DISTRO_NAME=${{ matrix.distro-name }}
+            _DISTRO_NAME=${{ env.distro-name }}
             _DISTRO_VERSION=${{ matrix.distro-version }}
-            _DISTRO_VARIANT=${{ matrix.distro-variant }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Generate artifact attestation
