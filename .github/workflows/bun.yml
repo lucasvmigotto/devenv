@@ -68,8 +68,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.IMAGE_NAME }}/${{ env.devenv }}:${{ matrix.version }}-${{ matrix.distro-version }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}/${{ env.devenv }}:${{ matrix.version }}-${{ matrix.distro-version }}
+            ${{ env.IMAGE_NAME }}:${{ env.devenv }}-${{ matrix.version }}-${{ matrix.distro-version }}
+            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:${{ env.devenv }}-${{ matrix.version }}-${{ matrix.distro-version }}
           build-args: |
             _VERSION=${{ matrix.version }}
             _DISTRO_NAME=${{ env.distro-name }}
