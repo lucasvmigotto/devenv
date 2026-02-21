@@ -7,6 +7,8 @@ on:
     paths:
       - "**/bun.Dockerfile"
       - "**/bun.yml"
+      - "**/base.Dockerfile"
+      - "**/base.yml"
   workflow_dispatch:
   workflow_run:
     workflows:
