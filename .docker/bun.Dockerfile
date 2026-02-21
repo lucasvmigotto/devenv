@@ -2,9 +2,8 @@
 
 ARG _DISTRO_NAME="debian"
 ARG _DISTRO_VERSION="trixie"
-ARG _DISTRO_VARIANT="slim"
 
-FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}-${_DISTRO_VARIANT}
+FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}
 
 ARG _VERSION="1.3.9"
 ARG _URL="https://bun.com/install"

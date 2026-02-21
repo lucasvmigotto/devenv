@@ -3,11 +3,10 @@
 ARG _VERSION="3.14"
 ARG _DISTRO_NAME="debian"
 ARG _DISTRO_VERSION="trixie"
-ARG _DISTRO_VARIANT="slim"
 
 FROM ghcr.io/astral-sh/uv:python${_VERSION}-${_DISTRO_VERSION} AS uv
 
-FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}-${_DISTRO_VARIANT}
+FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}
 
 ARG _USERNAME="developer"
 ARG _HOME="/home/${_USERNAME}"
