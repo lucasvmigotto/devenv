@@ -1,6 +1,6 @@
 {
 	"name": "devenv",
-    "image": "ghcr.io/lucasvmigotto/devenv:debian-trixie-slim",
+    "image": "ghcr.io/lucasvmigotto/devenv/debian:trixie",
 	"runArgs": [
         "--rm",
         "--env-file", ".env"
