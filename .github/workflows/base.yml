@@ -69,7 +69,6 @@ jobs:
         with:
           subject-name: ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
 
   base-ubuntu:
     runs-on: ubuntu-24.04
@@ -130,7 +129,6 @@ jobs:
         with:
           subject-name: ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
 
   base-alpine:
     runs-on: ubuntu-24.04
@@ -192,7 +190,6 @@ jobs:
         with:
           subject-name: ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
 
   base-archlinux:
     runs-on: ubuntu-24.04
@@ -254,4 +251,3 @@ jobs:
         with:
           subject-name: ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
