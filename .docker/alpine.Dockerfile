@@ -9,9 +9,9 @@ ARG _GROUP_ID="1000"
 ARG _USER_NAME="${_GROUP_NAME}"
 ARG _USER_ID="${_GROUP_ID}"
 
-COPY bin/nerdfonts.sh \
-    bin/groupnuser.sh \
-    bin/starship.sh \
+COPY ./bin/nerdfonts.sh \
+    ./bin/groupnuser.sh \
+    ./bin/starship.sh \
     /tmp/
 
 RUN apk update --quiet \
