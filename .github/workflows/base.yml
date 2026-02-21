@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "**/base.Dockerfile"
-      - "**/base.yml"
 
 env:
   REGISTRY_GH: ghcr.io

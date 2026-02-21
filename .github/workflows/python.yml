@@ -4,12 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "**/python.Dockerfile"
-      - "**/python.yml"
-      - "**/base.Dockerfile"
-      - "**/base.yml"
-  workflow_dispatch:
   workflow_run:
     workflows:
       - "Base"
