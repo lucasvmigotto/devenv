@@ -29,6 +29,8 @@
 				// Development
                 "ms-azuretools.vscode-docker",
                 "docker.docker",
+                "rogalmic.bash-debug",
+                "mads-hartmann.bash-ide-vscode",
                 // DevOps
                 "GitHub.vscode-github-actions",
                 "SanjulaGanepola.github-local-actions",
