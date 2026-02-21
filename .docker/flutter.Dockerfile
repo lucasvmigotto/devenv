@@ -16,7 +16,7 @@ RUN curl -sfo "${_FLUTTER_TAR}" "${_FLUTTER_ARTIFACT}" \
     && mkdir /flutter \
     && tar -xf "${_FLUTTER_TAR}" -C /flutter
 
-FROM ghcr.io/lucasvmigotto/devenv/${_DISTRO_NAME}:${_DISTRO_VERSION}
+FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}-${_DISTRO_VARIANT}
 
 ARG _USERNAME="developer"
 ARG _HOME="/home/${_USERNAME}"
