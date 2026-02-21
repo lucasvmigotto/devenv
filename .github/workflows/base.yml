@@ -58,8 +58,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.IMAGE_NAME }}/${{ env.distro }}:${{ matrix.version }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}/${{ env.distro }}:${{ matrix.version }}
+            ${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
+            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
           build-args: |
             _VERSION=${{ matrix.version }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -73,6 +73,7 @@ jobs:
 
   base-ubuntu:
     runs-on: ubuntu-24.04
+    needs: base-debian
     permissions:
       contents: read
       packages: write
@@ -118,8 +119,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.IMAGE_NAME }}/${{ env.distro }}:${{ matrix.version }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}/${{ env.distro }}:${{ matrix.version }}
+            ${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
+            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
           build-args: |
             _VERSION=${{ matrix.version }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -133,6 +134,7 @@ jobs:
 
   base-alpine:
     runs-on: ubuntu-24.04
+    needs: base-ubuntu
     permissions:
       contents: read
       packages: write
@@ -179,8 +181,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.IMAGE_NAME }}/${{ env.distro }}:${{ matrix.version }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}/${{ env.distro }}:${{ matrix.version }}
+            ${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
+            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
           build-args: |
             _VERSION=${{ matrix.version }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -194,6 +196,7 @@ jobs:
 
   base-archlinux:
     runs-on: ubuntu-24.04
+    needs: base-alpine
     permissions:
       contents: read
       packages: write
@@ -240,8 +243,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.IMAGE_NAME }}/${{ env.distro }}:${{ matrix.version }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}/${{ env.distro }}:${{ matrix.version }}
+            ${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
+            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
           build-args: |
             _VERSION=${{ matrix.version }}
           labels: ${{ steps.meta.outputs.labels }}
