@@ -9,7 +9,7 @@ FROM golang:${_VERSION}-${_DISTRO_VERSION} AS go
 
 RUN go install golang.org/x/tools/gopls@latest
 
-FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}-${_DISTRO_VARIANT}
+FROM ghcr.io/lucasvmigotto/devenv/${_DISTRO_NAME}:${_DISTRO_VERSION}
 
 ARG _VERSION="1.26.0"
 ARG _USERNAME="developer"
