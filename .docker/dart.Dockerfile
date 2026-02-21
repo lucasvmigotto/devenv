@@ -7,7 +7,7 @@ ARG _DISTRO_VARIANT="slim"
 
 FROM dart:${_VERSION} AS dart
 
-FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}-${_DISTRO_VARIANT}
+FROM ghcr.io/lucasvmigotto/devenv/${_DISTRO_NAME}:${_DISTRO_VERSION}
 
 ARG _USERNAME="developer"
 ARG _HOME="/home/${_USERNAME}"
