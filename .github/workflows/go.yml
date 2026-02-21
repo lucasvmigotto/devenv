@@ -4,12 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "**/go.Dockerfile"
-      - "**/go.yml"
-      - "**/base.Dockerfile"
-      - "**/base.yml"
-  workflow_dispatch:
   workflow_run:
     workflows:
       - "Base"
