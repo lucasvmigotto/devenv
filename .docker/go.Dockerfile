@@ -24,7 +24,7 @@ ARG _GO_PKG="${_GO_PATH}/pkg"
 COPY --from=go "${_LOCAL_BIN}" "${_LOCAL_BIN}"
 COPY --from=go "/go" "${_GO_PATH}"
 
-RUN sudo chown -R "${_USERNAME}:${_USERNAME}" "${_GO_PATH}"
+RUN doas chown -R "${_USERNAME}:${_USERNAME}" "${_GO_PATH}"
 
 ENV GOPATH="${_GO_PATH}"
 ENV GOLANG_VERSION="${_VERSION}"

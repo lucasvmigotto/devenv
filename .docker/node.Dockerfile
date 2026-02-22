@@ -25,9 +25,10 @@ COPY --from=node /app/node/ /node/
 
 ENV PATH="${PATH}:/node/bin/"
 
-COPY ./bin/apt.sh /tmp/
-RUN sudo bash /tmp/apt.sh libatomic1 \
-        && sudo rm /tmp/apt.sh \
+RUN doas apt-get update -qq \
+    && doas apt-get install --yes --no-install-recommends -qq \
+        libatomic1 > /dev/null \
+        && doas rm -rf /var/lib/apt/lists/* \
     && npm install --global yarn
 
 USER "${_USERNAME}"
