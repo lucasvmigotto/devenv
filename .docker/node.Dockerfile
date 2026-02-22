@@ -2,7 +2,6 @@
 
 ARG _DISTRO_NAME="debian"
 ARG _DISTRO_VERSION="trixie"
-ARG _DISTRO_VARIANT="slim"
 
 FROM alpine/curl:8.17.0 AS node
 
@@ -16,7 +15,7 @@ RUN curl -fsSo node.tar.xz "${_URL}" \
     && mkdir -p /app/node \
     && tar -xf node.tar.xz -C /app/node/ --strip-components=1
 
-FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}-${_DISTRO_VARIANT}
+FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}
 
 ARG _USERNAME="developer"
 ARG _HOME="/home/${_USERNAME}"
@@ -26,9 +25,10 @@ COPY --from=node /app/node/ /node/
 
 ENV PATH="${PATH}:/node/bin/"
 
-COPY ./bin/apt.sh /tmp/
-RUN sudo bash /tmp/apt.sh libatomic1 \
-        && sudo rm /tmp/apt.sh \
+RUN doas apt-get update -qq \
+    && doas apt-get install --yes --no-install-recommends -qq \
+        libatomic1 > /dev/null \
+        && doas rm -rf /var/lib/apt/lists/* \
     && npm install --global yarn
 
 USER "${_USERNAME}"

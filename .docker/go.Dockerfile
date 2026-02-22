@@ -3,13 +3,12 @@
 ARG _VERSION="1.26"
 ARG _DISTRO_NAME="debian"
 ARG _DISTRO_VERSION="trixie"
-ARG _DISTRO_VARIANT="slim"
 
 FROM golang:${_VERSION}-${_DISTRO_VERSION} AS go
 
 RUN go install golang.org/x/tools/gopls@latest
 
-FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}-${_DISTRO_VARIANT}
+FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}
 
 ARG _VERSION="1.26.0"
 ARG _USERNAME="developer"
@@ -25,7 +24,7 @@ ARG _GO_PKG="${_GO_PATH}/pkg"
 COPY --from=go "${_LOCAL_BIN}" "${_LOCAL_BIN}"
 COPY --from=go "/go" "${_GO_PATH}"
 
-RUN sudo chown -R "${_USERNAME}:${_USERNAME}" "${_GO_PATH}"
+RUN doas chown -R "${_USERNAME}:${_USERNAME}" "${_GO_PATH}"
 
 ENV GOPATH="${_GO_PATH}"
 ENV GOLANG_VERSION="${_VERSION}"

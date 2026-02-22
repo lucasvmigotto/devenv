@@ -3,11 +3,10 @@
 ARG _VERSION="27"
 ARG _DISTRO_NAME="debian"
 ARG _DISTRO_VERSION="trixie"
-ARG _DISTRO_VARIANT="slim"
 
 FROM openjdk:${_VERSION}-ea-jdk AS java
 
-FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}-${_DISTRO_VARIANT}
+FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}
 
 ARG _USERNAME="developer"
 ARG _HOME="/home/${_USERNAME}"

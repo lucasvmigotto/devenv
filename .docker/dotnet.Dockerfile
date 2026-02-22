@@ -3,11 +3,10 @@
 ARG _VERSION="10.0"
 ARG _DISTRO_NAME="debian"
 ARG _DISTRO_VERSION="trixie"
-ARG _DISTRO_VARIANT="slim"
 
 FROM mcr.microsoft.com/dotnet/sdk:${_VERSION} AS dotnet
 
-FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}-${_DISTRO_VARIANT}
+FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}
 
 ARG _USERNAME="developer"
 ARG _HOME="/home/${_USERNAME}"
@@ -25,12 +24,12 @@ COPY --from=dotnet /usr/share/dotnet /dotnet/
 ENV PATH="${PATH}:/dotnet"
 
 RUN export DEBIAN_FRONTEND="noninteractive" \
-    && sudo apt-get update -qq > /dev/null \
-    && sudo apt-get install \
+    && doas apt-get update -qq > /dev/null \
+    && doas apt-get install \
         --yes --no-install-recommends -qq \
         libicu-dev > /dev/null \
-    && sudo rm -rf /var/lib/apt/lists/* \
-    && echo "export DOTNET_SDK_VERSION=$(dotnet --version)" | sudo tee --append "${_HOME}/.zshrc"
+    && doas rm -rf /var/lib/apt/lists/* \
+    && echo "export DOTNET_SDK_VERSION=$(dotnet --version)" | doas tee --append "/etc/profile"
 
 ENV NUGET_PACKAGES="${_NUGET_PACKAGES}"
 ENV ASPNETCORE_HTTP_PORTS="${_ASPNETCORE_HTTP_PORTS}"
