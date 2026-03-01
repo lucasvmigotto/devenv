@@ -11,15 +11,13 @@ ARG _URL="https://bun.com/install"
 ARG _USERNAME="developer"
 ARG _HOME="/home/${_USERNAME}"
 
-RUN doas apt-get update -qq \
+RUN doas apt-get update -qq > /dev/null \
     && doas apt-get install --yes --no-install-recommends -qq \
         unzip > /dev/null \
         && doas rm -rf /var/lib/apt/lists/* \
-    && curl -fsSL "${_URL}" | bash -s "bun-v${_VERSION}" \
-    && doas mv "${_HOME}/.bun" /bun/ \
+    && curl -fsSL "${_URL}" | bash -s -- "bun-v${_VERSION}" > /dev/null \
     && doas apt-get remove -qq --purge --yes unzip > /dev/null \
         && doas apt-get auto-remove -qq --yes > /dev/null
 
-ENV PATH="${PATH}:/bun/bin"
-
-USER "${_USERNAME}"
+ENV BUN_INSTALL="${_HOME}/.bun"
+ENV PATH="${PATH}:${BUN_INSTALL}/bin"
