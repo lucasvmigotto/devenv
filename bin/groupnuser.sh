@@ -16,18 +16,26 @@ _user_shell=${5:-/bin/zsh}
 _priv_tool=${6:-sudo}
 _extra_groups=${7:-}
 
-# --- group (idempotent) ---
+# --- group: ensure GID ${_group_id} is named ${_group_name} ---
 if ! getent group "${_group_name}" >/dev/null 2>&1; then
-    if command -v groupadd >/dev/null 2>&1; then
+    if getent group "${_group_id}" >/dev/null 2>&1; then
+        _existing_group="$(getent group "${_group_id}" | cut -d: -f1)"
+        groupmod --new-name "${_group_name}" "${_existing_group}"
+    elif command -v groupadd >/dev/null 2>&1; then
         groupadd --gid "${_group_id}" "${_group_name}"
     else
         addgroup --gid "${_group_id}" "${_group_name}"
     fi
 fi
 
-# --- user (idempotent) ---
+# --- user: ensure UID ${_user_id} is named ${_user_name} ---
 if ! getent passwd "${_user_name}" >/dev/null 2>&1; then
-    if command -v useradd >/dev/null 2>&1; then
+    if getent passwd "${_user_id}" >/dev/null 2>&1; then
+        _existing_user="$(getent passwd "${_user_id}" | cut -d: -f1)"
+        usermod --login "${_user_name}" \
+            --home "/home/${_user_name}" --move-home \
+            --shell "${_user_shell}" --gid "${_group_id}" "${_existing_user}"
+    elif command -v useradd >/dev/null 2>&1; then
         useradd --uid "${_user_id}" --gid "${_group_id}" \
             --home "/home/${_user_name}" --create-home \
             --shell "${_user_shell}" "${_user_name}"
