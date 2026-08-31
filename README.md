@@ -58,3 +58,37 @@ elixir, haskell. Every image declares `VOLUME`s for its dependency caches
 | lua      | `.luarocks` |
 | elixir   | `.mix`, `.hex` |
 | haskell  | `.ghcup`, `.stack`, `.cabal` |
+
+## Building locally
+
+Base image (single parametrized Dockerfile):
+
+```bash
+docker build -f .docker/base.Dockerfile \
+    --build-arg _BASE_IMAGE=debian:trixie-slim \
+    --build-arg _DISTRO=debian \
+    --build-arg _PRIV_TOOL=sudo \
+    -t devenv:debian-trixie .
+```
+
+Language image (base reference is overridable via `_BASE_IMAGE`):
+
+```bash
+docker build -f .docker/rust.Dockerfile \
+    --build-arg _VERSION=1.89 \
+    --build-arg _DISTRO_NAME=debian \
+    --build-arg _DISTRO_VERSION=trixie \
+    --build-arg _BASE_IMAGE=devenv:debian-trixie \
+    -t devenv:rust .
+```
+
+## CI/CD
+
+The build matrix is declared in [`build/manifest.json`](build/manifest.json) and
+rendered to a GitHub Actions matrix by `build/gen-matrix.py`. `base.yml` builds
+all base variants; `languages.yml` builds language images after the base
+succeeds. Both delegate to the reusable `build-image.yml` (Buildx multi-arch,
+`type=gha` layer cache, SLSA provenance, push to GHCR + Docker Hub).
+
+To add a language or a new version, edit `manifest.json` — no workflow YAML
+changes are required.
