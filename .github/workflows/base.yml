@@ -4,250 +4,49 @@ on:
   push:
     branches:
       - main
+    paths:
+      - .docker/base.Dockerfile
+      - bin/**
+      - dottod
+      - .gitmodules
+      - build/manifest.json
+      - .github/workflows/base.yml
+      - .github/workflows/build-image.yml
+  workflow_dispatch:
 
-env:
-  REGISTRY_GH: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+permissions:
+  contents: read
 
 jobs:
-  base-debian:
+  matrix:
     runs-on: ubuntu-24.04
-    permissions:
-      contents: read
-      packages: write
-      attestations: write
-      id-token: write
-    env:
-      distro: debian
-    strategy:
-      matrix:
-        version:
-          - "trixie"
-          - "bookworm"
-          - "bullseye"
+    outputs:
+      matrix: ${{ steps.gen.outputs.matrix }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Log in to Docker Hub Container registry
-        uses: docker/login-action@v3
+        uses: actions/checkout@v4
         with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKER_HUB_PAT }}
+          submodules: recursive
 
-      - name: Log in to GitHub Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY_GH }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate build matrix
+        id: gen
+        run: echo "matrix=$(python3 build/gen-matrix.py base)" >> "$GITHUB_OUTPUT"
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: |
-            ${{ env.IMAGE_NAME }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}
-
-      - name: Build and push Docker image
-        id: push
-        uses: docker/build-push-action@v3
-        with:
-          file: .docker/${{ env.distro }}.Dockerfile
-          context: .
-          push: true
-          tags: |
-            ${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
-          build-args: |
-            _VERSION=${{ matrix.version }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v3
-        with:
-          subject-name: ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME}}
-          subject-digest: ${{ steps.push.outputs.digest }}
-
-  base-ubuntu:
-    runs-on: ubuntu-24.04
-    needs: base-debian
-    permissions:
-      contents: read
-      packages: write
-      attestations: write
-      id-token: write
-    env:
-      distro: ubuntu
+  build:
+    needs: matrix
     strategy:
+      fail-fast: false
+      max-parallel: 8
       matrix:
-        version:
-          - "noble"
-          - "jammy"
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Log in to Docker Hub Container registry
-        uses: docker/login-action@v3
-        with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKER_HUB_PAT }}
-
-      - name: Log in to GitHub Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY_GH }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: |
-            ${{ env.IMAGE_NAME }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}
-
-      - name: Build and push Docker image
-        id: push
-        uses: docker/build-push-action@v3
-        with:
-          file: .docker/${{ env.distro }}.Dockerfile
-          context: .
-          push: true
-          tags: |
-            ${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
-          build-args: |
-            _VERSION=${{ matrix.version }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v3
-        with:
-          subject-name: ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME}}
-          subject-digest: ${{ steps.push.outputs.digest }}
-
-  base-alpine:
-    runs-on: ubuntu-24.04
-    needs: base-ubuntu
-    permissions:
-      contents: read
-      packages: write
-      attestations: write
-      id-token: write
-    env:
-      distro: alpine
-    strategy:
-      matrix:
-        version:
-          - "3.23"
-          - "3.22"
-          - "3.21"
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Log in to Docker Hub Container registry
-        uses: docker/login-action@v3
-        with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKER_HUB_PAT }}
-
-      - name: Log in to GitHub Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY_GH }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: |
-            ${{ env.IMAGE_NAME }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}
-
-      - name: Build and push Docker image
-        id: push
-        uses: docker/build-push-action@v3
-        with:
-          file: .docker/${{ env.distro }}.Dockerfile
-          context: .
-          push: true
-          tags: |
-            ${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
-          build-args: |
-            _VERSION=${{ matrix.version }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v3
-        with:
-          subject-name: ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME}}
-          subject-digest: ${{ steps.push.outputs.digest }}
-
-  base-archlinux:
-    runs-on: ubuntu-24.04
-    needs: base-alpine
-    permissions:
-      contents: read
-      packages: write
-      attestations: write
-      id-token: write
-    env:
-      distro: archlinux
-    strategy:
-      matrix:
-        version:
-          - "base"
-          - "base-devel"
-          - "multilib-devel"
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Log in to Docker Hub Container registry
-        uses: docker/login-action@v3
-        with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKER_HUB_PAT }}
-
-      - name: Log in to GitHub Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY_GH }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: |
-            ${{ env.IMAGE_NAME }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}
-
-      - name: Build and push Docker image
-        id: push
-        uses: docker/build-push-action@v3
-        with:
-          file: .docker/${{ env.distro }}.Dockerfile
-          context: .
-          push: true
-          tags: |
-            ${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
-            ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME }}:${{ env.distro }}-${{ matrix.version }}
-          build-args: |
-            _VERSION=${{ matrix.version }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v3
-        with:
-          subject-name: ${{ env.REGISTRY_GH }}/${{ env.IMAGE_NAME}}
-          subject-digest: ${{ steps.push.outputs.digest }}
+        include: ${{ fromJson(needs.matrix.outputs.matrix) }}
+    uses: ./.github/workflows/build-image.yml
+    with:
+      file: .docker/base.Dockerfile
+      context: .
+      tags: ${{ matrix.tag }}
+      build-args: |
+        _BASE_IMAGE=${{ matrix.base_image }}
+        _DISTRO=${{ matrix.distro }}
+        _PRIV_TOOL=${{ matrix.priv }}
+      cache-scope: base-${{ matrix.distro }}-${{ matrix.version }}
+    secrets: inherit
