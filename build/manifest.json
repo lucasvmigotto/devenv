@@ -1,0 +1,33 @@
+{
+  "default_priv_tool": "sudo",
+  "latest": "debian-trixie",
+  "priv_tools": ["sudo", "doas"],
+  "default_versions": {
+    "debian": "trixie",
+    "ubuntu": "noble",
+    "alpine": "3.23",
+    "archlinux": "base"
+  },
+  "bases": [
+    {"name": "debian", "image": "debian", "tag_suffix": "-slim", "pkg": "apt", "versions": ["trixie", "bookworm", "bullseye"]},
+    {"name": "ubuntu", "image": "ubuntu", "tag_suffix": "", "pkg": "apt", "versions": ["noble", "jammy"]},
+    {"name": "alpine", "image": "alpine", "tag_suffix": "", "pkg": "apk", "versions": ["3.23", "3.22", "3.21"]},
+    {"name": "archlinux", "image": "archlinux", "tag_suffix": "", "pkg": "pacman", "versions": ["base", "base-devel", "multilib-devel"]}
+  ],
+  "languages": [
+    {"name": "java", "versions": ["25", "21"], "bases": ["debian", "ubuntu", "archlinux"]},
+    {"name": "go", "versions": ["1.26", "1.25"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
+    {"name": "rust", "versions": ["1.89"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
+    {"name": "python", "versions": ["3.14", "3.13", "3.12"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
+    {"name": "dotnet", "versions": ["10.0", "9.0"], "bases": ["debian", "ubuntu"]},
+    {"name": "flutter", "versions": ["3.38.9"], "bases": ["debian", "ubuntu"]},
+    {"name": "bun", "versions": ["1.3.9"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
+    {"name": "zig", "versions": ["0.15.2"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
+    {"name": "c", "versions": ["latest"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
+    {"name": "cpp", "versions": ["latest"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
+    {"name": "clojure", "versions": ["1.12.4"], "bases": ["debian", "ubuntu", "archlinux"]},
+    {"name": "lua", "versions": ["5.4"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
+    {"name": "elixir", "versions": ["1.19"], "bases": ["debian", "ubuntu"]},
+    {"name": "haskell", "versions": ["9.12"], "bases": ["debian", "ubuntu"]}
+  ]
+}
