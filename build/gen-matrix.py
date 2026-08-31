@@ -16,6 +16,7 @@ def load():
 
 def base_rows(m):
     default = m.get("default_priv_tool", "sudo")
+    latest = m.get("latest")
     rows = []
     for b in m["bases"]:
         for v in b["versions"]:
@@ -31,6 +32,7 @@ def base_rows(m):
                     "pkg": b["pkg"],
                     "priv": p,
                     "tag": tag,
+                    "alias": "type=raw,value=latest" if tag == latest else "",
                 })
     return rows
 

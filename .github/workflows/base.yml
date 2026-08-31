@@ -44,6 +44,7 @@ jobs:
       file: .docker/base.Dockerfile
       context: .
       tags: ${{ matrix.tag }}
+      extra-tags: ${{ matrix.alias }}
       build-args: |
         _BASE_IMAGE=${{ matrix.base_image }}
         _DISTRO=${{ matrix.distro }}
