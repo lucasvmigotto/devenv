@@ -1,6 +1,6 @@
 {
 	"name": "devenv",
-    "image": "ghcr.io/lucasvmigotto/devenv/debian:trixie",
+    "image": "ghcr.io/lucasvmigotto/devenv:debian-trixie",
 	"runArgs": [
         "--rm",
         "--env-file", ".env"
@@ -14,8 +14,8 @@
 
         },
         {
-            "source": "devcontainer-java-tbt-extensions",
-            "target": "/root/.vscode-server/extensions",
+            "source": "devenv-vscode-server",
+            "target": "/home/developer/.vscode-server",
             "type": "volume"
         }
     ],
