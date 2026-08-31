@@ -12,6 +12,10 @@ on:
       tags:
         required: true
         type: string
+      extra-tags:
+        required: false
+        type: string
+        default: ""
       build-args:
         required: false
         type: string
@@ -64,6 +68,7 @@ jobs:
             ghcr.io/${{ github.repository }}
           tags: |
             type=raw,value=${{ inputs.tags }}
+            ${{ inputs.extra-tags }}
 
       - name: Build and push Docker image
         id: push
