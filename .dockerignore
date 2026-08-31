@@ -1,0 +1,14 @@
+.git
+.github
+.gitmodules
+.env
+.env.example
+.actrc
+.editorconfig
+README.md
+.devcontainer
+build
+.dockerignore
+dottod/.git
+dottod/tui
+dottod/docs
