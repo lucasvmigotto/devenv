@@ -3,34 +3,35 @@
 ARG _VERSION="1.26"
 ARG _DISTRO_NAME="debian"
 ARG _DISTRO_VERSION="trixie"
+ARG _BASE_IMAGE="ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}"
 
-FROM golang:${_VERSION}-${_DISTRO_VERSION} AS go
+FROM golang:${_VERSION} AS go
 
 RUN go install golang.org/x/tools/gopls@latest
 
-FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}
+FROM ${_BASE_IMAGE}
 
-ARG _VERSION="1.26.0"
+USER root
+
+ARG _VERSION
+ARG _DISTRO_NAME
+ARG _DISTRO_VERSION
 ARG _USERNAME="developer"
-
 ARG _HOME="/home/${_USERNAME}"
 
-ARG _LOCAL_BIN="/usr/local/go"
+ARG _GOROOT="/usr/local/go"
+ARG _GOPATH="${_HOME}/go"
 
-ARG _GO_PATH="${_HOME}/go"
-ARG _GO_BIN="${_GO_PATH}/bin"
-ARG _GO_PKG="${_GO_PATH}/pkg"
+COPY --from=go "${_GOROOT}" "${_GOROOT}"
+COPY --from=go /go "${_GOPATH}"
 
-COPY --from=go "${_LOCAL_BIN}" "${_LOCAL_BIN}"
-COPY --from=go "/go" "${_GO_PATH}"
+ENV GOPATH="${_GOPATH}"
+ENV PATH="${_GOROOT}/bin:${_GOPATH}/bin:${PATH}"
 
-RUN doas chown -R "${_USERNAME}:${_USERNAME}" "${_GO_PATH}"
-
-ENV GOPATH="${_GO_PATH}"
-ENV GOLANG_VERSION="${_VERSION}"
-
-ENV PATH="${PATH}:${_LOCAL_BIN}/bin"
+RUN mkdir -p "${_GOPATH}/pkg" "${_GOPATH}/bin" \
+    && chown -R "${_USERNAME}:${_USERNAME}" "${_GOPATH}"
 
 USER "${_USERNAME}"
+WORKDIR "${_HOME}"
 
-VOLUME [ "${_GO_BIN}", "${_GO_PKG}" ]
+VOLUME [ "${_GOPATH}/pkg", "${_GOPATH}/bin" ]

@@ -3,28 +3,36 @@
 ARG _VERSION="3.14"
 ARG _DISTRO_NAME="debian"
 ARG _DISTRO_VERSION="trixie"
+ARG _BASE_IMAGE="ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}"
 
-FROM ghcr.io/astral-sh/uv:python${_VERSION}-${_DISTRO_VERSION} AS uv
+FROM ${_BASE_IMAGE}
 
-FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}
+USER root
 
+ARG _VERSION
+ARG _DISTRO_NAME
+ARG _DISTRO_VERSION
 ARG _USERNAME="developer"
 ARG _HOME="/home/${_USERNAME}"
 
 ARG _VIRTUAL_ENV="${_HOME}/.venv"
+ARG _UV_CACHE_DIR="${_HOME}/.cache/uv"
+ARG _UV_PYTHON_DIR="${_HOME}/.local/share/uv/python"
 
-COPY --from=uv /usr/local/bin/uv /usr/local/bin/uvx /bin/
-
-RUN mkdir -p "${_VIRTUAL_ENV}" \
-    && chown -R "${_USERNAME}:${_USERNAME}" "${_VIRTUAL_ENV}" \
-    && echo "if [[ -d '${_HOME}/.venv/bin/' ]]; then source '${_HOME}/.venv/bin/activate'; fi" \
-        | tee -a "${_HOME}/.bashrc"
+ENV UV_INSTALL_DIR="/usr/local/bin"
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ENV UV_PROJECT_ENVIRONMENT="${_VIRTUAL_ENV}"
 ENV UV_LINK_MODE="copy"
+ENV UV_CACHE_DIR="${_UV_CACHE_DIR}"
+ENV UV_PYTHON_INSTALL_DIR="${_UV_PYTHON_DIR}"
+ENV DEVENV_PYTHON_VERSION="${_VERSION}"
 
-ENV VIRTUAL_ENV="${_VIRTUAL_ENV}"
+RUN mkdir -p "${_VIRTUAL_ENV}" "${_UV_CACHE_DIR}" "${_UV_PYTHON_DIR}" \
+    && chown -R "${_USERNAME}:${_USERNAME}" \
+        "${_VIRTUAL_ENV}" "${_HOME}/.cache" "${_HOME}/.local/share/uv"
 
 USER "${_USERNAME}"
+WORKDIR "${_HOME}"
 
-VOLUME [ "${_VIRTUAL_ENV}" ]
+VOLUME [ "${_VIRTUAL_ENV}", "${_UV_CACHE_DIR}", "${_UV_PYTHON_DIR}" ]

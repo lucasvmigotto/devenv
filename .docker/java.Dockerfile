@@ -3,27 +3,33 @@
 ARG _VERSION="27"
 ARG _DISTRO_NAME="debian"
 ARG _DISTRO_VERSION="trixie"
+ARG _BASE_IMAGE="ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}"
 
-FROM openjdk:${_VERSION}-ea-jdk AS java
+FROM eclipse-temurin:${_VERSION}-jdk AS java
 
-FROM ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}
+FROM ${_BASE_IMAGE}
 
+USER root
+
+ARG _VERSION
+ARG _DISTRO_NAME
+ARG _DISTRO_VERSION
 ARG _USERNAME="developer"
 ARG _HOME="/home/${_USERNAME}"
 
-ARG _VERSION="27"
-ARG _JAVA_HOME="/java/"
+ARG _JAVA_HOME="/opt/java/openjdk"
+ARG _GRADLE_HOME="${_HOME}/.gradle"
+ARG _MVN_REP="${_HOME}/.m2/repository"
 
-COPY --from=java "/usr/java/openjdk-${_VERSION}/" "${_JAVA_HOME}"
+COPY --from=java "${_JAVA_HOME}" "${_JAVA_HOME}"
 
 ENV JAVA_HOME="${_JAVA_HOME}"
-ENV PATH="${PATH}:${JAVA_HOME}bin"
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-ENV _MVN_REP_DIR="${_HOME}/.m2/repository/"
-
-RUN mkdir -p "${_MVN_REP_DIR}" \
-    && chown -R "${_USERNAME}:${_USERNAME}" "${_MVN_REP_DIR}"
+RUN mkdir -p "${_GRADLE_HOME}" "${_MVN_REP}" \
+    && chown -R "${_USERNAME}:${_USERNAME}" "${_GRADLE_HOME}" "${_HOME}/.m2"
 
 USER "${_USERNAME}"
+WORKDIR "${_HOME}"
 
-VOLUME [ "${_MVN_REP_DIR}" ]
+VOLUME [ "${_GRADLE_HOME}", "${_MVN_REP}" ]
