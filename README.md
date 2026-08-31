@@ -17,8 +17,8 @@ submodule), so the images stay in sync with your workstation.
 bin/               build scripts (pkg.sh, groupnuser.sh, setup-base.sh, ...)
 build/             CI matrix (manifest.json + gen-matrix.py)
 dottod/            git submodule — shell/fonts source of truth
-.github/workflows/ base.yml, languages.yml, build-image.yml
-.devcontainer/     devcontainer for developing this repo
+.github/workflows/ base.yml, languages.yml, build-image.yml, dockerhub-description.yml
+dockerhub.README.md  Docker Hub description
 ```
 
 ## Tags
