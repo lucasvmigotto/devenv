@@ -92,3 +92,8 @@ succeeds. Both delegate to the reusable `build-image.yml` (Buildx multi-arch,
 
 To add a language or a new version, edit `manifest.json` — no workflow YAML
 changes are required.
+
+## Privilege escalation
+
+`_PRIV_TOOL=sudo|doas` is a base-image-only switch. Base images tagged
+`{distro}-{version}` default to `sudo`; append `-doas` for `doas`.
