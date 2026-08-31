@@ -1,17 +1,21 @@
-name: Base
+name: Languages
 
 on:
   push:
     branches:
       - main
     paths:
-      - .docker/base.Dockerfile
-      - bin/**
-      - dottod
-      - .gitmodules
+      - .docker/*.Dockerfile
       - build/manifest.json
-      - .github/workflows/base.yml
+      - .github/workflows/languages.yml
       - .github/workflows/build-image.yml
+  workflow_run:
+    workflows:
+      - Base
+    types:
+      - completed
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -30,10 +34,11 @@ jobs:
 
       - name: Generate build matrix
         id: gen
-        run: echo "matrix=$(python3 build/gen-matrix.py base)" >> "$GITHUB_OUTPUT"
+        run: echo "matrix=$(python3 build/gen-matrix.py lang)" >> "$GITHUB_OUTPUT"
 
   build:
     needs: matrix
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
       packages: write
@@ -46,13 +51,12 @@ jobs:
         include: ${{ fromJson(needs.matrix.outputs.matrix) }}
     uses: ./.github/workflows/build-image.yml
     with:
-      file: .docker/base.Dockerfile
+      file: .docker/${{ matrix.name }}.Dockerfile
       context: .
       tags: ${{ matrix.tag }}
-      extra-tags: ${{ matrix.alias }}
       build-args: |
-        _BASE_IMAGE=${{ matrix.base_image }}
-        _DISTRO=${{ matrix.distro }}
-        _PRIV_TOOL=${{ matrix.priv }}
-      cache-scope: base-${{ matrix.distro }}-${{ matrix.version }}
+        _VERSION=${{ matrix.version }}
+        _DISTRO_NAME=${{ matrix.distro }}
+        _DISTRO_VERSION=${{ matrix.base_version }}
+      cache-scope: lang-${{ matrix.name }}-${{ matrix.distro }}
     secrets: inherit
