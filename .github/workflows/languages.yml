@@ -1,0 +1,57 @@
+name: Languages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .docker/*.Dockerfile
+      - build/manifest.json
+      - .github/workflows/languages.yml
+      - .github/workflows/build-image.yml
+  workflow_run:
+    workflows:
+      - Base
+    types:
+      - completed
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  matrix:
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.gen.outputs.matrix }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Generate build matrix
+        id: gen
+        run: echo "matrix=$(python3 build/gen-matrix.py lang)" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: matrix
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        include: ${{ fromJson(needs.matrix.outputs.matrix) }}
+    uses: ./.github/workflows/build-image.yml
+    with:
+      file: .docker/${{ matrix.name }}.Dockerfile
+      context: .
+      tags: ${{ matrix.tag }}
+      build-args: |
+        _VERSION=${{ matrix.version }}
+        _DISTRO_NAME=${{ matrix.distro }}
+        _DISTRO_VERSION=${{ matrix.base_version }}
+      cache-scope: lang-${{ matrix.name }}-${{ matrix.distro }}
+    secrets: inherit
