@@ -1,1 +1,99 @@
 # devenv
+
+A suite of reproducible, non-root [DevContainer](https://containers.dev) base
+and language images, built on Debian, Ubuntu, Alpine, and Arch Linux.
+
+Each image ships a `developer` user (UID 1000) with passwordless escalation
+(`sudo` or `doas`), ZSH + [Spaceship](https://spaceship-prompt.sh/) prompt, and
+a curated set of [Nerd Fonts](https://www.nerdfonts.com/)
+(FiraCode, FiraMono, NerdFontsSymbolsOnly). Shell and font setup are driven by
+the [dottod](https://github.com/lucasvmigotto/dottod) dotfiles (a git
+submodule), so the images stay in sync with your workstation.
+
+## Layout
+
+```txt
+.docker/           Dockerfiles (base + one per language)
+bin/               build scripts (pkg.sh, groupnuser.sh, setup-base.sh, ...)
+build/             CI matrix (manifest.json + gen-matrix.py)
+dottod/            git submodule — shell/fonts source of truth
+.github/workflows/ base.yml, languages.yml, build-image.yml
+.devcontainer/     devcontainer for developing this repo
+```
+
+## Tags
+
+Base images (`ghcr.io/lucasvmigotto/devenv`):
+
+| Distro    | Versions                    | Priv tool |
+| --------- | --------------------------- | --------- |
+| `debian`  | `trixie` `bookworm` `bullseye` | `sudo` (default), `-doas` suffix |
+| `ubuntu`  | `noble` `jammy`             |           |
+| `alpine`  | `3.23` `3.22` `3.21`        |           |
+| `archlinux` | `base` `base-devel` `multilib-devel` | |
+
+Examples: `debian-trixie`, `debian-trixie-doas`, `alpine-3.23`.
+
+Language images: `{lang}-{version}-{distro}`, e.g. `rust-1.89-debian`,
+`python-3.14-alpine`, `go-1.26-ubuntu`.
+
+## Languages
+
+java, go, rust, python (uv), dotnet, flutter, bun, zig, c, cpp, clojure, lua,
+elixir, haskell. Every image declares `VOLUME`s for its dependency caches
+(owned by `developer`) so caches survive container rebuilds:
+
+| Language | Cache volumes (under `$HOME`) |
+| -------- | ----------------------------- |
+| java     | `.gradle`, `.m2/repository` |
+| go       | `go/pkg`, `go/bin` |
+| rust     | `.cargo/registry`, `.cargo/git`, `.cargo/bin` |
+| python   | `.venv`, `.cache/uv`, `.local/share/uv/python` |
+| dotnet   | `.nuget/packages` |
+| flutter  | `.pub-cache` |
+| bun      | `.bun` |
+| zig      | `.cache/zig` |
+| c / cpp  | `.cache/ccache` |
+| clojure  | `.m2/repository` |
+| lua      | `.luarocks` |
+| elixir   | `.mix`, `.hex` |
+| haskell  | `.ghcup`, `.stack`, `.cabal` |
+
+## Building locally
+
+Base image (single parametrized Dockerfile):
+
+```bash
+docker build -f .docker/base.Dockerfile \
+    --build-arg _BASE_IMAGE=debian:trixie-slim \
+    --build-arg _DISTRO=debian \
+    --build-arg _PRIV_TOOL=sudo \
+    -t devenv:debian-trixie .
+```
+
+Language image (base reference is overridable via `_BASE_IMAGE`):
+
+```bash
+docker build -f .docker/rust.Dockerfile \
+    --build-arg _VERSION=1.89 \
+    --build-arg _DISTRO_NAME=debian \
+    --build-arg _DISTRO_VERSION=trixie \
+    --build-arg _BASE_IMAGE=devenv:debian-trixie \
+    -t devenv:rust .
+```
+
+## CI/CD
+
+The build matrix is declared in [`build/manifest.json`](build/manifest.json) and
+rendered to a GitHub Actions matrix by `build/gen-matrix.py`. `base.yml` builds
+all base variants; `languages.yml` builds language images after the base
+succeeds. Both delegate to the reusable `build-image.yml` (Buildx multi-arch,
+`type=gha` layer cache, SLSA provenance, push to GHCR + Docker Hub).
+
+To add a language or a new version, edit `manifest.json` — no workflow YAML
+changes are required.
+
+## Privilege escalation
+
+`_PRIV_TOOL=sudo|doas` is a base-image-only switch. Base images tagged
+`{distro}-{version}` default to `sudo`; append `-doas` for `doas`.
