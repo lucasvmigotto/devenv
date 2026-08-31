@@ -39,6 +39,11 @@ jobs:
   build:
     needs: matrix
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
     strategy:
       fail-fast: false
       max-parallel: 8
