@@ -1,5 +1,6 @@
 {
   "default_priv_tool": "sudo",
+  "latest": "debian-trixie",
   "priv_tools": ["sudo", "doas"],
   "default_versions": {
     "debian": "trixie",
