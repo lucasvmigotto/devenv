@@ -20,7 +20,7 @@
     {"name": "rust", "versions": ["1.89"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
     {"name": "python", "versions": ["3.14", "3.13", "3.12"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
     {"name": "dotnet", "versions": ["10.0", "9.0"], "bases": ["debian", "ubuntu"]},
-    {"name": "flutter", "versions": ["3.38.9"], "bases": ["debian", "ubuntu"]},
+    {"name": "flutter", "versions": ["3.47.0"], "jdk": ["25", "21"], "bases": ["debian", "ubuntu"]},
     {"name": "bun", "versions": ["1.3.9"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
     {"name": "zig", "versions": ["0.15.2"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
     {"name": "c", "versions": ["latest"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
