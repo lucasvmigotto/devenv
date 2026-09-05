@@ -21,21 +21,20 @@ ARG _CABAL_DIR="${_HOME}/.cabal"
 
 COPY bin/pkg.sh /opt/devenv/bin/pkg.sh
 
-RUN export _DISTRO="${_DISTRO_NAME}" && . /opt/devenv/bin/pkg.sh \
+RUN export _DISTRO="${_DISTRO_NAME}" \
+    && . /opt/devenv/bin/pkg.sh \
     && pkg_update \
     && pkg_install build-essential libgmp-dev libffi-dev libncurses-dev curl \
-    && pkg_clean
-
-RUN su "${_USERNAME}" -s /bin/zsh -c \
+    && pkg_clean \
+    && su "${_USERNAME}" -s /bin/zsh -c \
         "curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org \
-         | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_MINIMAL=1 BOOTSTRAP_HASKELL_GHC_VERSION=${_VERSION} sh"
+         | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_MINIMAL=1 BOOTSTRAP_HASKELL_GHC_VERSION=${_VERSION} sh" \
+    && mkdir -p "${_STACK_ROOT}" "${_CABAL_DIR}" \
+    && chown -R "${_USERNAME}:${_USERNAME}" "${_STACK_ROOT}" "${_CABAL_DIR}"
 
 ENV PATH="${_GHCUP_DIR}/bin:${PATH}"
 ENV STACK_ROOT="${_STACK_ROOT}"
 ENV CABAL_DIR="${_CABAL_DIR}"
-
-RUN mkdir -p "${_STACK_ROOT}" "${_CABAL_DIR}" \
-    && chown -R "${_USERNAME}:${_USERNAME}" "${_STACK_ROOT}" "${_CABAL_DIR}"
 
 USER "${_USERNAME}"
 WORKDIR "${_HOME}"

@@ -19,16 +19,16 @@ ARG _LUAROCKS_HOME="${_HOME}/.luarocks"
 
 COPY bin/pkg.sh /opt/devenv/bin/pkg.sh
 
-RUN export _DISTRO="${_DISTRO_NAME}" && . /opt/devenv/bin/pkg.sh \
+RUN export _DISTRO="${_DISTRO_NAME}" \
+    && . /opt/devenv/bin/pkg.sh \
     && pkg_update \
     && case "${_DISTRO_NAME}" in \
          debian|ubuntu) pkg_install "lua${_VERSION}" luarocks ;; \
          alpine)        pkg_install "lua${_VERSION}" luarocks ;; \
          archlinux)     pkg_install lua luarocks ;; \
        esac \
-    && pkg_clean
-
-RUN mkdir -p "${_LUAROCKS_HOME}" \
+    && pkg_clean \
+    && mkdir -p "${_LUAROCKS_HOME}" \
     && chown -R "${_USERNAME}:${_USERNAME}" "${_LUAROCKS_HOME}"
 
 USER "${_USERNAME}"
