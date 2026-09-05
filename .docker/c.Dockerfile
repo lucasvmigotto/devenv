@@ -25,13 +25,12 @@ RUN export _DISTRO="${_DISTRO_NAME}" && . /opt/devenv/bin/pkg.sh \
          alpine)        pkg_install build-base gcc gdb make cmake ninja ccache pkgconf ;; \
          archlinux)     pkg_install base-devel gcc gdb make cmake ninja ccache pkgconf ;; \
        esac \
-    && pkg_clean
+    && pkg_clean \
+    && mkdir -p "${_CCACHE_DIR}" \
+    && chown -R "${_USERNAME}:${_USERNAME}" "${_CCACHE_DIR}"
 
 ENV CC="gcc"
 ENV CCACHE_DIR="${_CCACHE_DIR}"
-
-RUN mkdir -p "${_CCACHE_DIR}" \
-    && chown -R "${_USERNAME}:${_USERNAME}" "${_CCACHE_DIR}"
 
 USER "${_USERNAME}"
 WORKDIR "${_HOME}"

@@ -23,14 +23,13 @@ COPY bin/pkg.sh /opt/devenv/bin/pkg.sh
 RUN export _DISTRO="${_DISTRO_NAME}" && . /opt/devenv/bin/pkg.sh \
     && pkg_update \
     && pkg_install elixir \
-    && pkg_clean
+    && pkg_clean \
+    && mkdir -p "${_MIX_HOME}" "${_HEX_HOME}" \
+    && chown -R "${_USERNAME}:${_USERNAME}" "${_MIX_HOME}" "${_HEX_HOME}"
 
 ENV MIX_HOME="${_MIX_HOME}"
 ENV HEX_HOME="${_HEX_HOME}"
 ENV DEVENV_ELIXIR_VERSION="${_VERSION}"
-
-RUN mkdir -p "${_MIX_HOME}" "${_HEX_HOME}" \
-    && chown -R "${_USERNAME}:${_USERNAME}" "${_MIX_HOME}" "${_HEX_HOME}"
 
 USER "${_USERNAME}"
 WORKDIR "${_HOME}"
