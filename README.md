@@ -37,6 +37,10 @@ Examples: `debian-trixie`, `debian-trixie-doas`, `alpine-3.23`.
 Language images: `{lang}-{version}-{distro}`, e.g. `rust-1.89-debian`,
 `python-3.14-alpine`, `go-1.26-ubuntu`.
 
+Flutter images bundle a JDK and the Android SDK for building and testing
+Android apps. The default JDK is 25; a JDK 21 variant appends `-jdk21`:
+`flutter-3.47.0-debian`, `flutter-3.47.0-jdk21-debian`.
+
 ## Languages
 
 java, go, rust, python (uv), dotnet, flutter, bun, zig, c, cpp, clojure, lua,
@@ -50,7 +54,7 @@ elixir, haskell. Every image declares `VOLUME`s for its dependency caches
 | rust     | `.cargo/registry`, `.cargo/git`, `.cargo/bin` |
 | python   | `.venv`, `.cache/uv`, `.local/share/uv/python` |
 | dotnet   | `.nuget/packages` |
-| flutter  | `.pub-cache` |
+| flutter  | `.pub-cache`, `.gradle`, `.android` |
 | bun      | `.bun` |
 | zig      | `.cache/zig` |
 | c / cpp  | `.cache/ccache` |
@@ -91,7 +95,8 @@ succeeds. Both delegate to the reusable `build-image.yml` (Buildx multi-arch,
 `type=gha` layer cache, SLSA provenance, push to GHCR + Docker Hub).
 
 To add a language or a new version, edit `manifest.json` — no workflow YAML
-changes are required.
+changes are required. Languages may declare an optional `jdk` list (used by
+flutter: the first entry is the default tag, others get a `-jdk{N}` suffix).
 
 ## Privilege escalation
 
