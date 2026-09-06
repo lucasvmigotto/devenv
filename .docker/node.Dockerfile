@@ -45,12 +45,16 @@ RUN export _DISTRO="${_DISTRO_NAME}" && . /opt/devenv/bin/pkg.sh \
        esac \
     && pkg_clean \
     && if [ "${_PKG_MANAGER}" = "yarn" ]; then \
-           corepack enable && corepack prepare yarn@stable --activate; \
+           corepack enable \
+           && su "${_USERNAME}" -s /bin/sh -c "${_NODE_HOME}/bin/corepack prepare yarn@stable --activate"; \
        elif [ "${_PKG_MANAGER}" = "pnpm" ]; then \
-           corepack enable && corepack prepare pnpm@latest --activate; \
+           corepack enable \
+           && su "${_USERNAME}" -s /bin/sh -c "${_NODE_HOME}/bin/corepack prepare pnpm@latest --activate" \
+           && su "${_USERNAME}" -s /bin/sh -c "${_NODE_HOME}/bin/pnpm --version > /dev/null"; \
        fi \
+    && mkdir -p "${_HOME}/.cache" "${_HOME}/.local/share/pnpm" "${_HOME}/.yarn" "${_HOME}/.npm" \
     && chown -R "${_USERNAME}:${_USERNAME}" \
-        "${_HOME}/.cache" "${_HOME}/.local/share" "${_HOME}/.yarn" "${_HOME}/.npm"
+        "${_HOME}/.cache" "${_HOME}/.local" "${_HOME}/.yarn" "${_HOME}/.npm"
 
 USER "${_USERNAME}"
 WORKDIR "${_HOME}"
