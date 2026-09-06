@@ -1,0 +1,42 @@
+# syntax=docker/dockerfile:1
+#
+# "Delphi" here means Free Pascal Compiler running in Delphi-compatibility
+# mode ({$mode delphi} pragma). Embarcadero Delphi itself has no headless
+# Linux distribution and cannot be packaged in a reproducible container.
+
+ARG _VERSION="3.2.2"
+ARG _DISTRO_NAME="debian"
+ARG _DISTRO_VERSION="trixie"
+ARG _BASE_IMAGE="ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}"
+
+FROM ${_BASE_IMAGE}
+
+USER root
+
+ARG _VERSION
+ARG _DISTRO_NAME
+ARG _DISTRO_VERSION
+ARG _USERNAME="developer"
+ARG _HOME="/home/${_USERNAME}"
+
+ARG _FPPKG_HOME="${_HOME}/.fppkg"
+
+COPY bin/pkg.sh /opt/devenv/bin/pkg.sh
+
+RUN export _DISTRO="${_DISTRO_NAME}" && . /opt/devenv/bin/pkg.sh \
+    && pkg_update \
+    && case "${_DISTRO_NAME}" in \
+         debian|ubuntu) pkg_install fpc fpc-source ;; \
+         alpine)        pkg_install fpc ;; \
+         archlinux)     pkg_install fpc ;; \
+       esac \
+    && pkg_clean \
+    && mkdir -p "${_FPPKG_HOME}" \
+    && chown -R "${_USERNAME}:${_USERNAME}" "${_FPPKG_HOME}"
+
+ENV DEVENV_FPC_VERSION="${_VERSION}"
+
+USER "${_USERNAME}"
+WORKDIR "${_HOME}"
+
+VOLUME [ "${_FPPKG_HOME}" ]

@@ -16,7 +16,7 @@ Ubuntu, Alpine, and Arch Linux.
 - **Persistent caches** — every language image declares `VOLUME`s for its
   dependency caches, mapped under `/home/developer`, so caches survive
   container rebuilds.
-- **14 languages across 4 distros**, built and pushed with multi-arch Buildx,
+- **25 languages across 4 distros**, built and pushed with multi-arch Buildx,
   `type=gha` layer caching, and SLSA provenance.
 - **Flutter with Android SDK** — Flutter images bundle a JDK and the Android
   SDK (commandline-tools, platforms, build-tools), pre-cached engine
@@ -133,6 +133,20 @@ for its dependency caches:
 | elixir   | `.mix`, `.hex` |
 | haskell  | `.ghcup`, `.stack`, `.cabal` |
 | node     | `.npm`, `.yarn`, `.local/share/pnpm` |
+| assembly | *(none — stateless toolchain)* |
+| cobol    | `.config/gnucobol` |
+| julia    | `.julia` |
+| scala    | `.cache/coursier`, `.sbt`, `.ivy2` |
+| delphi (fpc) | `.fppkg` |
+| perl     | `perl5`, `.cpan` |
+| php      | `.composer` |
+| r        | `.R/library`, `.cache/R` |
+| ruby     | `.gem`, `.bundle` |
+| smalltalk (pharo) | `.cache/pharo` |
+
+> **Substitutions:** `delphi` is Free Pascal in Delphi-compatibility mode
+> (Embarcadero Delphi has no headless Linux distribution); `smalltalk` is
+> Pharo (GNU Smalltalk is unmaintained and absent from Debian/Ubuntu).
 
 ## Privilege escalation
 
