@@ -44,7 +44,9 @@ Android apps. The default JDK is 25; a JDK 21 variant appends `-jdk21`:
 ## Languages
 
 java, go, rust, python (uv), dotnet, flutter, bun, zig, c, cpp, clojure, lua,
-elixir, haskell, node (yarn/npm/pnpm). Every image declares `VOLUME`s for its dependency caches
+elixir, haskell, node (yarn/npm/pnpm), assembly, cobol, julia, scala,
+delphi (free pascal), perl, php, r, ruby, smalltalk (pharo). Every image
+declares `VOLUME`s for its dependency caches
 (owned by `developer`) so caches survive container rebuilds:
 
 | Language | Cache volumes (under `$HOME`) |
@@ -63,6 +65,21 @@ elixir, haskell, node (yarn/npm/pnpm). Every image declares `VOLUME`s for its de
 | elixir   | `.mix`, `.hex` |
 | haskell  | `.ghcup`, `.stack`, `.cabal` |
 | node     | `.npm`, `.yarn`, `.local/share/pnpm` |
+| assembly | *(none — stateless toolchain)* |
+| cobol    | `.config/gnucobol` |
+| julia    | `.julia` |
+| scala    | `.cache/coursier`, `.sbt`, `.ivy2` |
+| delphi (fpc) | `.fppkg` |
+| perl     | `perl5`, `.cpan` |
+| php      | `.composer` |
+| r        | `.R/library`, `.cache/R` |
+| ruby     | `.gem`, `.bundle` |
+| smalltalk (pharo) | `.cache/pharo` |
+
+> **Substitutions:** `delphi` ships the Free Pascal Compiler in
+> Delphi-compatibility mode (`{$mode delphi}`) — Embarcadero Delphi has no
+> headless Linux distribution. `smalltalk` ships Pharo — GNU Smalltalk was
+> dropped from Debian/Ubuntu and has no active upstream.
 
 ## Building locally
 
