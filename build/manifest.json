@@ -32,6 +32,7 @@
     {"name": "haskell", "versions": ["9.12"], "bases": ["debian", "ubuntu"]},
     {"name": "assembly", "versions": ["latest"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
     {"name": "cobol", "versions": ["3.2"], "bases": ["debian", "ubuntu", "alpine"]},
-    {"name": "julia", "versions": ["1.12", "1.10"], "bases": ["debian", "ubuntu", "archlinux"]}
+    {"name": "julia", "versions": ["1.12", "1.10"], "bases": ["debian", "ubuntu", "archlinux"]},
+    {"name": "scala", "versions": ["3.7", "2.13"], "jdk": ["21"], "bases": ["debian", "ubuntu", "archlinux"]}
   ]
 }
