@@ -35,6 +35,7 @@
     {"name": "julia", "versions": ["1.12", "1.10"], "bases": ["debian", "ubuntu", "archlinux"]},
     {"name": "scala", "versions": ["3.7", "2.13"], "jdk": ["21"], "bases": ["debian", "ubuntu", "archlinux"]},
     {"name": "delphi", "versions": ["3.2.2"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
-    {"name": "perl", "versions": ["5.40"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]}
+    {"name": "perl", "versions": ["5.40"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
+    {"name": "php", "versions": ["8.4", "8.3"], "bases": ["debian", "ubuntu", "archlinux"]}
   ]
 }
