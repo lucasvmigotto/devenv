@@ -44,7 +44,7 @@ Android apps. The default JDK is 25; a JDK 21 variant appends `-jdk21`:
 ## Languages
 
 java, go, rust, python (uv), dotnet, flutter, bun, zig, c, cpp, clojure, lua,
-elixir, haskell. Every image declares `VOLUME`s for its dependency caches
+elixir, haskell, node (yarn/npm/pnpm). Every image declares `VOLUME`s for its dependency caches
 (owned by `developer`) so caches survive container rebuilds:
 
 | Language | Cache volumes (under `$HOME`) |
@@ -62,6 +62,7 @@ elixir, haskell. Every image declares `VOLUME`s for its dependency caches
 | lua      | `.luarocks` |
 | elixir   | `.mix`, `.hex` |
 | haskell  | `.ghcup`, `.stack`, `.cabal` |
+| node     | `.npm`, `.yarn`, `.local/share/pnpm` |
 
 ## Building locally
 
@@ -96,7 +97,9 @@ succeeds. Both delegate to the reusable `build-image.yml` (Buildx multi-arch,
 
 To add a language or a new version, edit `manifest.json` — no workflow YAML
 changes are required. Languages may declare an optional `jdk` list (used by
-flutter: the first entry is the default tag, others get a `-jdk{N}` suffix).
+flutter: the first entry is the default tag, others get a `-jdk{N}` suffix)
+or a `pm` list (used by node: the first entry is the default tag, others get
+a `-{pm}` suffix, e.g. `-npm`, `-pnpm`).
 
 ## Privilege escalation
 

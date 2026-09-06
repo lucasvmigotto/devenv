@@ -48,15 +48,19 @@ java-25-debian        go-1.26-alpine        rust-1.89-debian
 python-3.14-alpine    dotnet-10.0-debian    flutter-3.47.0-debian
 bun-1.3.9-alpine      zig-0.15.2-debian     c-latest-debian
 cpp-latest-debian     clojure-1.12.4-debian lua-5.4-alpine
-elixir-1.19-debian    haskell-9.12-debian
+elixir-1.19-debian    haskell-9.12-debian   node-24.20.0-debian
 ```
+
+Node images ship with yarn (Berry) by default; npm and pnpm variants
+append a suffix (`node-24.20.0-npm-debian`, `node-24.20.0-pnpm-debian`).
 
 Flutter images bundle a JDK and the Android SDK for building and testing
 Android apps. The default JDK is 25; a JDK 21 variant appends `-jdk21`
 (`flutter-3.47.0-debian`, `flutter-3.47.0-jdk21-debian`).
 
 Not every language supports every distro (dotnet, elixir, and haskell are
-glibc-only — Debian/Ubuntu). See the
+glibc-only — Debian/Ubuntu; node and clojure also ship glibc builds —
+Debian/Ubuntu/ArchLinux, no Alpine). See the
 [manifest](https://github.com/lucasvmigotto/devenv/blob/main/build/manifest.json)
 for the full matrix.
 
@@ -128,6 +132,7 @@ for its dependency caches:
 | lua      | `.luarocks` |
 | elixir   | `.mix`, `.hex` |
 | haskell  | `.ghcup`, `.stack`, `.cabal` |
+| node     | `.npm`, `.yarn`, `.local/share/pnpm` |
 
 ## Privilege escalation
 
