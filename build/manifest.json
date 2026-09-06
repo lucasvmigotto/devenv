@@ -30,6 +30,7 @@
     {"name": "elixir", "versions": ["1.19"], "bases": ["debian", "ubuntu"]},
     {"name": "node", "versions": ["24.20.0", "22.23.2"], "pm": ["yarn", "npm", "pnpm"], "bases": ["debian", "ubuntu", "archlinux"]},
     {"name": "haskell", "versions": ["9.12"], "bases": ["debian", "ubuntu"]},
-    {"name": "assembly", "versions": ["latest"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]}
+    {"name": "assembly", "versions": ["latest"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
+    {"name": "cobol", "versions": ["3.2"], "bases": ["debian", "ubuntu", "alpine"]}
   ]
 }
