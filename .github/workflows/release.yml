@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - VERSION
+      - docs/package.json
 
 permissions:
   contents: write
