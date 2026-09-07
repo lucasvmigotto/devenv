@@ -40,6 +40,7 @@
     {"name": "r", "versions": ["4.4"], "bases": ["debian", "ubuntu", "alpine", "archlinux"]},
     {"name": "ruby", "versions": ["3.4", "3.3"], "bases": ["debian", "ubuntu", "archlinux"]},
     {"name": "smalltalk", "versions": ["130", "120"], "bases": ["debian", "ubuntu"]},
-    {"name": "basic", "versions": ["2.90"], "bases": ["debian", "ubuntu", "alpine"]}
+    {"name": "basic", "versions": ["2.90"], "bases": ["debian", "ubuntu", "alpine"]},
+    {"name": "ada", "versions": ["latest"], "bases": ["debian", "ubuntu"]}
   ]
 }
