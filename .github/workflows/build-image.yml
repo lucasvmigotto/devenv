@@ -16,6 +16,10 @@ on:
         required: false
         type: string
         default: ""
+      extra-args:
+        required: false
+        type: string
+        default: ""
       build-args:
         required: false
         type: string
@@ -80,7 +84,9 @@ jobs:
           platforms: ${{ inputs.platforms }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: ${{ inputs.build-args }}
+          build-args: |
+            ${{ inputs.build-args }}
+            ${{ inputs.extra-args }}
           cache-from: type=gha,scope=${{ inputs.cache-scope }}
           cache-to: type=gha,mode=max,scope=${{ inputs.cache-scope }}
 

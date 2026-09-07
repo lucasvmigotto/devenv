@@ -7,7 +7,14 @@ ARG _BASE_IMAGE="ghcr.io/lucasvmigotto/devenv:${_DISTRO_NAME}-${_DISTRO_VERSION}
 
 FROM golang:${_VERSION} AS go
 
-RUN go install golang.org/x/tools/gopls@latest
+ARG _VERSION
+
+RUN go_minor="$(printf '%s' "${_VERSION}" | cut -d. -f2)" \
+    && if [ "${go_minor}" -ge 26 ]; then \
+           go install golang.org/x/tools/gopls@latest; \
+       else \
+           go install golang.org/x/tools/gopls@v0.21.1; \
+       fi
 
 FROM ${_BASE_IMAGE}
 

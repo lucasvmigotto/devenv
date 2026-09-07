@@ -58,5 +58,8 @@ jobs:
         _VERSION=${{ matrix.version }}
         _DISTRO_NAME=${{ matrix.distro }}
         _DISTRO_VERSION=${{ matrix.base_version }}
+      extra-args: |
+        ${{ matrix.jdk != '' && format('_JAVA_VERSION={0}', matrix.jdk) || '' }}
+        ${{ matrix.pm != '' && format('_PKG_MANAGER={0}', matrix.pm) || '' }}
       cache-scope: lang-${{ matrix.name }}-${{ matrix.distro }}
     secrets: inherit
