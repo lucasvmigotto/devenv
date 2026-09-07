@@ -41,6 +41,8 @@ Flutter images bundle a JDK and the Android SDK for building and testing
 Android apps. The default JDK is 25; a JDK 21 variant appends `-jdk21`:
 `flutter-3.47.0-debian`, `flutter-3.47.0-jdk21-debian`.
 
+Node images ship yarn (Berry) by default; `-npm` and `-pnpm` variants exist.
+
 ## Languages
 
 java, go, rust, python (uv), dotnet, flutter, bun, zig, c, cpp, clojure, lua,
@@ -80,6 +82,18 @@ declares `VOLUME`s for its dependency caches
 > Delphi-compatibility mode (`{$mode delphi}`) — Embarcadero Delphi has no
 > headless Linux distribution. `smalltalk` ships Pharo — GNU Smalltalk was
 > dropped from Debian/Ubuntu and has no active upstream.
+
+### Supported distros
+
+Upstream glibc-linked toolchains restrict some images (`build/manifest.json`
+is the source of truth):
+
+| Distros | Languages |
+| ------- | --------- |
+| debian, ubuntu, alpine, archlinux | assembly, bun, c, cpp, go, lua, perl, python, r, rust, zig |
+| debian, ubuntu, archlinux | clojure, delphi, java, julia, node, php, ruby, scala |
+| debian, ubuntu, alpine | cobol |
+| debian, ubuntu | dotnet, elixir, flutter, haskell, smalltalk |
 
 ## Building locally
 

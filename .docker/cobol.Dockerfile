@@ -26,6 +26,3 @@ ENV DEVENV_COBOL_VERSION="${_VERSION}"
 
 USER "${_USERNAME}"
 WORKDIR "${_HOME}"
-
-# No VOLUME: gnucobol keeps no per-project dependency cache (an empty
-# COB_CONFIG_DIR would break the compiler's default.conf lookup).

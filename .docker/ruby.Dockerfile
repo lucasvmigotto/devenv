@@ -27,7 +27,6 @@ COPY --from=ruby /usr/local/include/ruby-* /usr/local/include/
 
 COPY bin/pkg.sh /opt/devenv/bin/pkg.sh
 
-# Runtime .so deps for the copied ruby binary (from `ldd /usr/local/bin/ruby`).
 RUN export _DISTRO="${_DISTRO_NAME}" && . /opt/devenv/bin/pkg.sh \
     && pkg_update \
     && case "${_DISTRO_NAME}" in \

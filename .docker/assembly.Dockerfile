@@ -22,5 +22,3 @@ RUN export _DISTRO="${_DISTRO_NAME}" && . /opt/devenv/bin/pkg.sh \
 
 USER "${_USERNAME}"
 WORKDIR "${_HOME}"
-
-# No VOLUME: nasm/binutils/gdb keep no per-project dependency cache.
