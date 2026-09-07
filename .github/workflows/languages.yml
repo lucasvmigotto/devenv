@@ -67,7 +67,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Substitute ##VERSION## placeholder
-        run: sed "s/##VERSION##/$(cat VERSION)/g" dockerhub.README.md > /tmp/dockerhub.README.md
+        run: sed "s/##VERSION##/$(jq -r .version docs/package.json)/g" dockerhub.README.md > /tmp/dockerhub.README.md
 
       - name: Push description to Docker Hub
         uses: peter-evans/dockerhub-description@v4
