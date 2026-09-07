@@ -1,14 +1,6 @@
 name: Languages
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - .docker/*.Dockerfile
-      - build/manifest.json
-      - .github/workflows/languages.yml
-      - .github/workflows/build-image.yml
   workflow_run:
     workflows:
       - Base
@@ -63,3 +55,24 @@ jobs:
         ${{ matrix.pm != '' && format('_PKG_MANAGER={0}', matrix.pm) || '' }}
       cache-scope: lang-${{ matrix.name }}-${{ matrix.distro }}
     secrets: inherit
+
+  description:
+    needs: build
+    if: ${{ always() && needs.build.result == 'success' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Substitute ##VERSION## placeholder
+        run: sed "s/##VERSION##/$(cat VERSION)/g" dockerhub.README.md > /tmp/dockerhub.README.md
+
+      - name: Push description to Docker Hub
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKER_HUB_PAT }}
+          repository: lucasvmigotto/devenv
+          readme-filepath: /tmp/dockerhub.README.md
