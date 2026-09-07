@@ -1,17 +1,10 @@
 name: Base
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - .docker/base.Dockerfile
-      - bin/**
-      - dottod
-      - .gitmodules
-      - build/manifest.json
-      - .github/workflows/base.yml
-      - .github/workflows/build-image.yml
+  workflow_run:
+    workflows: [ Release ]
+    types: [ completed ]
+    branches: [ main ]
   workflow_dispatch:
 
 permissions:
@@ -34,6 +27,7 @@ jobs:
 
   build:
     needs: matrix
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
       packages: write
