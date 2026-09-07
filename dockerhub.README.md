@@ -1,4 +1,4 @@
-# devenv - v1.1.0
+# devenv - v##VERSION##
 
 Reproducible, non-root [DevContainer](https://containers.dev) images for Debian,
 Ubuntu, Alpine, and Arch Linux.
@@ -78,7 +78,7 @@ Example variant tags: `node-24.20.0-npm-debian`, `flutter-3.47.0-jdk21-ubuntu`.
 
 Upstream glibc-linked toolchains are why some images skip Alpine (musl);
 see the
-[manifest](https://github.com/lucasvmigotto/devenv/blob/main/build/manifest.json)
+[manifest](https://github.com/lucasvmigotto/devenv/blob/##VERSION##/build/manifest.json)
 as the single source of truth for the full tag matrix.
 
 ## Quick start
@@ -189,4 +189,4 @@ docker build -f .docker/base.Dockerfile \
     -t devenv:debian-trixie .
 ```
 
-Source and build matrix: <https://github.com/lucasvmigotto/devenv>.
+Source and build matrix: <https://github.com/lucasvmigotto/devenv/tree/##VERSION##>.
