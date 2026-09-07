@@ -44,7 +44,10 @@ function Footer() {
   return (
     <footer className="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
       devenv docs v{__APP_VERSION__} — generated from{" "}
-      <a className="underline hover:text-slate-300" href={`https://github.com/lucasvmigotto/devenv/tree/${__APP_VERSION__}`}>
+      <a
+        className="underline hover:text-slate-300"
+        href={`https://github.com/lucasvmigotto/devenv/tree/${__APP_VERSION__}`}
+      >
         lucasvmigotto/devenv
       </a>
     </footer>
