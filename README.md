@@ -37,10 +37,19 @@ Examples: `debian-trixie`, `debian-trixie-doas`, `alpine-3.23`.
 Language images: `{lang}-{version}-{distro}`, e.g. `rust-1.89-debian`,
 `python-3.14-alpine`, `go-1.26-ubuntu`.
 
+Flutter images bundle a JDK and the Android SDK for building and testing
+Android apps. The default JDK is 25; a JDK 21 variant appends `-jdk21`:
+`flutter-3.47.0-debian`, `flutter-3.47.0-jdk21-debian`.
+
+Node images ship yarn (Berry) by default; `-npm` and `-pnpm` variants exist.
+
 ## Languages
 
 java, go, rust, python (uv), dotnet, flutter, bun, zig, c, cpp, clojure, lua,
-elixir, haskell. Every image declares `VOLUME`s for its dependency caches
+elixir, haskell, node (yarn/npm/pnpm), assembly, cobol, julia, scala,
+delphi (free pascal), perl, php, r, ruby, smalltalk (pharo), basic (yabasic),
+ada (gnat), lisp (sbcl). Every image
+declares `VOLUME`s for its dependency caches
 (owned by `developer`) so caches survive container rebuilds:
 
 | Language | Cache volumes (under `$HOME`) |
@@ -50,7 +59,7 @@ elixir, haskell. Every image declares `VOLUME`s for its dependency caches
 | rust     | `.cargo/registry`, `.cargo/git`, `.cargo/bin` |
 | python   | `.venv`, `.cache/uv`, `.local/share/uv/python` |
 | dotnet   | `.nuget/packages` |
-| flutter  | `.pub-cache` |
+| flutter  | `.pub-cache`, `.gradle`, `.android` |
 | bun      | `.bun` |
 | zig      | `.cache/zig` |
 | c / cpp  | `.cache/ccache` |
@@ -58,6 +67,37 @@ elixir, haskell. Every image declares `VOLUME`s for its dependency caches
 | lua      | `.luarocks` |
 | elixir   | `.mix`, `.hex` |
 | haskell  | `.ghcup`, `.stack`, `.cabal` |
+| node     | `.npm`, `.yarn`, `.local/share/pnpm` |
+| assembly | *(none — stateless toolchain)* |
+| cobol    | *(none — stateless toolchain)* |
+| julia    | `.julia` |
+| scala    | `.cache/coursier`, `.sbt`, `.ivy2` |
+| delphi (fpc) | `.fppkg` |
+| perl     | `perl5`, `.cpan` |
+| php      | `.composer` |
+| r        | `.R/library`, `.cache/R` |
+| ruby     | `.gem`, `.bundle` |
+| smalltalk (pharo) | `.cache/pharo` |
+| basic (yabasic) | *(none — stateless interpreter)* |
+| ada (gnat) | `.cache/ccache` |
+| lisp (sbcl) | `quicklisp`, `.cache/common-lisp` |
+
+> **Substitutions:** `delphi` ships the Free Pascal Compiler in
+> Delphi-compatibility mode (`{$mode delphi}`) — Embarcadero Delphi has no
+> headless Linux distribution. `smalltalk` ships Pharo — GNU Smalltalk was
+> dropped from Debian/Ubuntu and has no active upstream.
+
+### Supported distros
+
+Upstream glibc-linked toolchains restrict some images (`build/manifest.json`
+is the source of truth):
+
+| Distros | Languages |
+| ------- | --------- |
+| debian, ubuntu, alpine, archlinux | assembly, bun, c, cpp, go, lisp, lua, perl, python, r, rust, zig |
+| debian, ubuntu, archlinux | clojure, delphi, java, julia, node, php, ruby, scala |
+| debian, ubuntu, alpine | basic, cobol |
+| debian, ubuntu | ada, dotnet, elixir, flutter, haskell, smalltalk |
 
 ## Building locally
 
@@ -91,7 +131,10 @@ succeeds. Both delegate to the reusable `build-image.yml` (Buildx multi-arch,
 `type=gha` layer cache, SLSA provenance, push to GHCR + Docker Hub).
 
 To add a language or a new version, edit `manifest.json` — no workflow YAML
-changes are required.
+changes are required. Languages may declare an optional `jdk` list (used by
+flutter: the first entry is the default tag, others get a `-jdk{N}` suffix)
+or a `pm` list (used by node: the first entry is the default tag, others get
+a `-{pm}` suffix, e.g. `-npm`, `-pnpm`).
 
 ## Privilege escalation
 

@@ -40,15 +40,23 @@ def base_rows(m):
 def lang_rows(m):
     rows = []
     for lang in m["languages"]:
+        jdks = lang.get("jdk") or [""]
+        pms = lang.get("pm") or [""]
         for v in lang["versions"]:
             for distro in lang["bases"]:
-                rows.append({
-                    "name": lang["name"],
-                    "version": v,
-                    "distro": distro,
-                    "base_version": m["default_versions"][distro],
-                    "tag": f"{lang['name']}-{v}-{distro}",
-                })
+                for i, jdk in enumerate(jdks):
+                    for j, pm in enumerate(pms):
+                        jdk_suffix = f"-jdk{jdk}" if jdk and i > 0 else ""
+                        pm_suffix = f"-{pm}" if pm and j > 0 else ""
+                        rows.append({
+                            "name": lang["name"],
+                            "version": v,
+                            "distro": distro,
+                            "base_version": m["default_versions"][distro],
+                            "tag": f"{lang['name']}-{v}{jdk_suffix}{pm_suffix}-{distro}",
+                            "jdk": jdk,
+                            "pm": pm,
+                        })
     return rows
 
 

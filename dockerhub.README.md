@@ -1,4 +1,4 @@
-# devenv
+# devenv - v1.1.0
 
 Reproducible, non-root [DevContainer](https://containers.dev) images for Debian,
 Ubuntu, Alpine, and Arch Linux.
@@ -16,42 +16,70 @@ Ubuntu, Alpine, and Arch Linux.
 - **Persistent caches** — every language image declares `VOLUME`s for its
   dependency caches, mapped under `/home/developer`, so caches survive
   container rebuilds.
-- **14 languages across 4 distros**, built and pushed with multi-arch Buildx,
+- **28 languages across 4 distros**, built and pushed with multi-arch Buildx,
   `type=gha` layer caching, and SLSA provenance.
+- **Flutter with Android SDK** — Flutter images bundle a JDK and the Android
+  SDK (commandline-tools, platforms, build-tools), pre-cached engine
+  artifacts, and `VOLUME`s for `.pub-cache`, `.gradle`, and `.android`.
 
 ## Tags
 
 ### Base images
 
-| Tag                 | Distro     | Notes                     |
-| ------------------- | ---------- | ------------------------- |
-| `latest`            | Debian 13  | alias for `debian-trixie` |
-| `debian-trixie`     | Debian 13  | `sudo` by default         |
-| `debian-trixie-doas`| Debian 13  | `doas` escalation         |
-| `ubuntu-noble`      | Ubuntu 24.04 | `sudo`                  |
-| `alpine-3.23`       | Alpine 3.23 | `sudo`                  |
-| `archlinux-base`    | Arch Linux | `sudo`                    |
+Tag pattern: `{distro}-{version}` (`sudo` by default; append `-doas`).
+`latest` is an alias for `debian-trixie`.
 
-Base versions: `debian` (`trixie` `bookworm` `bullseye`), `ubuntu` (`noble`
-`jammy`), `alpine` (`3.23` `3.22` `3.21`), `archlinux` (`base` `base-devel`
-`multilib-devel`). Append `-doas` to any tag for `doas` instead of `sudo`.
+| Distro    | Tags                                        |
+| --------- | ------------------------------------------- |
+| `debian`  | `trixie`, `bookworm`, `bullseye`            |
+| `ubuntu`  | `noble`, `jammy`                            |
+| `alpine`  | `3.23`, `3.22`, `3.21`                      |
+| `archlinux` | `base`, `base-devel`, `multilib-devel`    |
+
+Examples: `debian-trixie`, `debian-trixie-doas`, `ubuntu-noble`, `alpine-3.23`, `archlinux-base`.
 
 ### Language images
 
-Tag pattern: `{lang}-{version}-{distro}`.
+Tag pattern: `{lang}-{version}-{distro}` (e.g. `go-1.26-debian`,
+`python-3.14-alpine`).
 
-```text
-java-25-debian        go-1.26-alpine        rust-1.89-debian
-python-3.14-alpine    dotnet-10.0-debian    flutter-3.38.9-debian
-bun-1.3.9-alpine      zig-0.15.2-debian     c-latest-debian
-cpp-latest-debian     clojure-1.12.4-debian lua-5.4-alpine
-elixir-1.19-debian    haskell-9.12-debian
-```
+| Image     | Versions              | Distros                    | Notes                              |
+| --------- | --------------------- | -------------------------- | ---------------------------------- |
+| assembly  | `latest`              | debian, ubuntu, alpine, archlinux | stateless toolchain, no cache |
+| bun       | `1.3.9`               | debian, ubuntu, alpine, archlinux |                               |
+| c         | `latest`              | debian, ubuntu, alpine, archlinux |                               |
+| clojure   | `1.12.4`              | debian, ubuntu, archlinux   |                                    |
+| cobol     | `3.2`                 | debian, ubuntu, alpine      |                                    |
+| cpp       | `latest`              | debian, ubuntu, alpine, archlinux |                               |
+| delphi    | `3.2.2`               | debian, ubuntu, archlinux   | Free Pascal, Delphi mode           |
+| dotnet    | `10.0`, `9.0`         | debian, ubuntu              | glibc-only                         |
+| elixir    | `1.19`                | debian, ubuntu              | glibc-only                         |
+| flutter   | `3.47.0`              | debian, ubuntu              | Android SDK; JDK 25 default, `-jdk21` variant |
+| go        | `1.26`, `1.25`        | debian, ubuntu, alpine, archlinux |                               |
+| haskell   | `9.12`                | debian, ubuntu              | glibc-only                         |
+| java      | `25`, `21`            | debian, ubuntu, archlinux   |                                    |
+| julia     | `1.12`, `1.10`        | debian, ubuntu, archlinux   |                                    |
+| lua       | `5.4`                 | debian, ubuntu, alpine, archlinux |                               |
+| node      | `24.20.0`, `22.23.2`  | debian, ubuntu, archlinux   | yarn (Berry) default, `-npm` / `-pnpm` variants |
+| perl      | `5.40`                | debian, ubuntu, alpine, archlinux |                               |
+| php       | `8.4`, `8.3`          | debian, ubuntu, archlinux   |                                    |
+| python    | `3.14`, `3.13`, `3.12` | debian, ubuntu, alpine, archlinux | uv-managed                     |
+| r         | `4.4`                 | debian, ubuntu, alpine, archlinux |                               |
+| ruby      | `3.4`, `3.3`          | debian, ubuntu, archlinux   |                                    |
+| rust      | `1.89`                | debian, ubuntu, alpine, archlinux |                               |
+| scala     | `3.7.4`, `2.13.18`    | debian, ubuntu, archlinux   | JDK 21, via Coursier               |
+| smalltalk | `130`, `120`          | debian, ubuntu              | Pharo; glibc-only                  |
+| zig       | `0.15.2`              | debian, ubuntu, alpine, archlinux |                               |
+| basic     | `2.90`                | debian, ubuntu, alpine      | Yabasic interpreter                |
+| ada       | `latest`              | debian, ubuntu              | GNAT (distro default version)      |
+| lisp      | `2.4`                 | debian, ubuntu, alpine, archlinux | SBCL + Quicklisp                 |
 
-Not every language supports every distro (dotnet, elixir, and haskell are
-glibc-only — Debian/Ubuntu). See the
+Example variant tags: `node-24.20.0-npm-debian`, `flutter-3.47.0-jdk21-ubuntu`.
+
+Upstream glibc-linked toolchains are why some images skip Alpine (musl);
+see the
 [manifest](https://github.com/lucasvmigotto/devenv/blob/main/build/manifest.json)
-for the full matrix.
+as the single source of truth for the full tag matrix.
 
 ## Quick start
 
@@ -113,7 +141,7 @@ for its dependency caches:
 | rust     | `.cargo/registry`, `.cargo/git`, `.cargo/bin` |
 | python   | `.venv`, `.cache/uv`, `.local/share/uv/python` |
 | dotnet   | `.nuget/packages` |
-| flutter  | `.pub-cache` |
+| flutter  | `.pub-cache`, `.gradle`, `.android` |
 | bun      | `.bun` |
 | zig      | `.cache/zig` |
 | c / cpp  | `.cache/ccache` |
@@ -121,6 +149,24 @@ for its dependency caches:
 | lua      | `.luarocks` |
 | elixir   | `.mix`, `.hex` |
 | haskell  | `.ghcup`, `.stack`, `.cabal` |
+| node     | `.npm`, `.yarn`, `.local/share/pnpm` |
+| assembly | *(none — stateless toolchain)* |
+| cobol    | *(none — stateless toolchain)* |
+| julia    | `.julia` |
+| scala    | `.cache/coursier`, `.sbt`, `.ivy2` |
+| delphi (fpc) | `.fppkg` |
+| perl     | `perl5`, `.cpan` |
+| php      | `.composer` |
+| r        | `.R/library`, `.cache/R` |
+| ruby     | `.gem`, `.bundle` |
+| smalltalk (pharo) | `.cache/pharo` |
+| basic (yabasic) | *(none — stateless interpreter)* |
+| ada (gnat) | `.cache/ccache` |
+| lisp (sbcl) | `quicklisp`, `.cache/common-lisp` |
+
+> **Substitutions:** `delphi` is Free Pascal in Delphi-compatibility mode
+> (Embarcadero Delphi has no headless Linux distribution); `smalltalk` is
+> Pharo (GNU Smalltalk is unmaintained and absent from Debian/Ubuntu).
 
 ## Privilege escalation
 
