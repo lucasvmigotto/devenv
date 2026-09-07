@@ -2,7 +2,13 @@
   "name": "devenv-docs",
   "version": "1.2.0",
   "type": "module",
-  "private": true,
+  "author": {
+    "name": "Lucas Vidor Migotto",
+    "email": "lvmigotto1@gmail.com",
+    "url": "https://lucasvmigotto.me"
+  },
+  "homepage": "https://devenv.lucasvmigotto.me",
+  "license": "GPL-3.0-only",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
