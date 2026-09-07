@@ -19,7 +19,7 @@ jobs:
 
       - name: Read version
         id: version
-        run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(jq -r .version docs/package.json)" >> "$GITHUB_OUTPUT"
 
       - name: Create and push tag
         env:
