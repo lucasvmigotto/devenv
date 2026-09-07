@@ -27,7 +27,7 @@ Base images (`ghcr.io/lucasvmigotto/devenv`):
 
 | Distro    | Versions                    | Priv tool |
 | --------- | --------------------------- | --------- |
-| `debian`  | `trixie` `bookworm` `bullseye` | `sudo` (default), `-doas` suffix |
+| `debian`  | `trixie` `bookworm` | `sudo` (default), `-doas` suffix |
 | `ubuntu`  | `noble` `jammy`             |           |
 | `alpine`  | `3.23` `3.22` `3.21`        |           |
 | `archlinux` | `base` `base-devel` `multilib-devel` | |
