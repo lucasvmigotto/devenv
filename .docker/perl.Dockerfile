@@ -25,7 +25,7 @@ RUN export _DISTRO="${_DISTRO_NAME}" && . /opt/devenv/bin/pkg.sh \
     && pkg_update \
     && case "${_DISTRO_NAME}" in \
          debian|ubuntu) pkg_install perl make gcc ;; \
-         alpine)        pkg_install perl make gcc musl-dev ;; \
+         alpine)        pkg_install perl make gcc musl-dev wget ;; \
          archlinux)     pkg_install perl make gcc ;; \
        esac \
     && pkg_clean \
