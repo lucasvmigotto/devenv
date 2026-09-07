@@ -21,17 +21,18 @@ ARG _GEM_HOME="${_HOME}/.gem"
 ARG _BUNDLE_HOME="${_HOME}/.bundle"
 
 COPY --from=ruby /usr/local/bin/ /usr/local/bin/
+COPY --from=ruby /usr/local/lib/libruby.so* /usr/local/lib/
 COPY --from=ruby /usr/local/lib/ruby /usr/local/lib/ruby
 COPY --from=ruby /usr/local/include/ruby-* /usr/local/include/
 
 COPY bin/pkg.sh /opt/devenv/bin/pkg.sh
 
-# Runtime .so deps for the copied ruby binary (verify with `ldd` per base).
+# Runtime .so deps for the copied ruby binary (from `ldd /usr/local/bin/ruby`).
 RUN export _DISTRO="${_DISTRO_NAME}" && . /opt/devenv/bin/pkg.sh \
     && pkg_update \
     && case "${_DISTRO_NAME}" in \
-         debian|ubuntu) pkg_install libssl3 libyaml-0-2 zlib1g ;; \
-         archlinux)     pkg_install openssl libyaml zlib ;; \
+         debian|ubuntu) pkg_install libssl3 libyaml-0-2 zlib1g libgmp10 libcrypt1 ;; \
+         archlinux)     pkg_install openssl libyaml zlib gmp libxcrypt ;; \
        esac \
     && pkg_clean \
     && mkdir -p "${_GEM_HOME}" "${_BUNDLE_HOME}" \

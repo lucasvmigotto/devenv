@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG _VERSION="3.7"
+ARG _VERSION="3.7.4"
 ARG _JAVA_VERSION="21"
 ARG _DISTRO_NAME="debian"
 ARG _DISTRO_VERSION="trixie"
@@ -46,7 +46,7 @@ RUN export _DISTRO="${_DISTRO_NAME}" && . /opt/devenv/bin/pkg.sh \
     && install -m 0755 /tmp/cs /usr/local/bin/cs \
     && rm -f /tmp/cs \
     && su "${_USERNAME}" -s /bin/zsh -c \
-        "HOME=${_HOME} cs setup --yes --apps scala,scalac,sbt,scalafmt" \
+        "HOME=${_HOME} cs install scala:${_VERSION} scalac:${_VERSION} sbt scalafmt" \
     && mkdir -p "${_SBT_HOME}" "${_IVY_HOME}" \
     && chown -R "${_USERNAME}:${_USERNAME}" "${_HOME}/.cache" "${_HOME}/.local" "${_SBT_HOME}" "${_IVY_HOME}"
 

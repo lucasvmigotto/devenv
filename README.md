@@ -66,7 +66,7 @@ declares `VOLUME`s for its dependency caches
 | haskell  | `.ghcup`, `.stack`, `.cabal` |
 | node     | `.npm`, `.yarn`, `.local/share/pnpm` |
 | assembly | *(none — stateless toolchain)* |
-| cobol    | `.config/gnucobol` |
+| cobol    | *(none — stateless toolchain)* |
 | julia    | `.julia` |
 | scala    | `.cache/coursier`, `.sbt`, `.ivy2` |
 | delphi (fpc) | `.fppkg` |
