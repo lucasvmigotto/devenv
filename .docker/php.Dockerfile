@@ -27,9 +27,6 @@ COPY --from=composer /usr/bin/composer /usr/local/bin/composer
 
 COPY bin/pkg.sh /opt/devenv/bin/pkg.sh
 
-# Runtime .so deps for the copied php binary (from `ldd /usr/local/bin/php`).
-# -dev metapackages are used where runtime sonames drift across releases
-# (t64 transition on trixie/noble; libssl1.1 on bullseye).
 RUN export _DISTRO="${_DISTRO_NAME}" && . /opt/devenv/bin/pkg.sh \
     && pkg_update \
     && case "${_DISTRO_NAME}" in \

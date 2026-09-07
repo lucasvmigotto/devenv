@@ -1,8 +1,4 @@
 # syntax=docker/dockerfile:1
-#
-# "Smalltalk" here means Pharo, the actively maintained Smalltalk environment.
-# GNU Smalltalk was dropped from Debian/Ubuntu years ago and has no active
-# upstream, so it is not a viable base for a reproducible container image.
 
 ARG _VERSION="130"
 ARG _DISTRO_NAME="debian"

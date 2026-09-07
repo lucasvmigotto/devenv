@@ -1,8 +1,4 @@
 # syntax=docker/dockerfile:1
-#
-# "Delphi" here means Free Pascal Compiler running in Delphi-compatibility
-# mode ({$mode delphi} pragma). Embarcadero Delphi itself has no headless
-# Linux distribution and cannot be packaged in a reproducible container.
 
 ARG _VERSION="3.2.2"
 ARG _DISTRO_NAME="debian"
