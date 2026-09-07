@@ -78,7 +78,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: devenv-docs-${{ needs.ci.outputs.version }}
-          path: .
+          path: dist
 
       - name: Validate R2 endpoint
         run: |
@@ -102,7 +102,7 @@ jobs:
 
       - name: Sync static site to Cloudflare R2
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
+          AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_SECRET }}
           AWS_DEFAULT_REGION: auto
           AWS_EC2_METADATA_DISABLED: "true"
