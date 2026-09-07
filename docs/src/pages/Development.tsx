@@ -59,8 +59,9 @@ export function Development() {
             generation is microseconds, not a hot path).
           </li>
           <li>
-            <Badge>VERSION</Badge> + <Badge>##VERSION##</Badge> — release tags come from the{" "}
-            <Badge>VERSION</Badge> file; the Docker Hub README is substituted at sync time.
+            <Badge>docs/package.json</Badge> + <Badge>##VERSION##</Badge> — release tags come from
+            the package.json <Badge>version</Badge> field; the Docker Hub README is substituted at
+            sync time.
           </li>
         </ul>
       </Section>
@@ -68,7 +69,7 @@ export function Development() {
       <Section title="CI triggers & chain">
         <CodeBlock
           lang="text"
-          code={`Release (VERSION tag) → Base → Languages → Docker Hub description
+          code={`Release (package.json tag) → Base → Languages → Docker Hub description
              (workflow_run, success-gated)   (+ description job inside languages.yml)`}
         />
         <p>
