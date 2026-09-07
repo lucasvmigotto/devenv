@@ -27,6 +27,8 @@ jobs:
     defaults:
       run:
         working-directory: docs
+    outputs:
+      version: ${{ steps.version.outputs.VERSION }}
 
     steps:
       - name: Checkout
@@ -48,3 +50,18 @@ jobs:
 
       - name: Build
         run: bun run build
+
+      - name: Set version
+        id: version
+        run: |
+          VERSION=$(bun -p "require('./package.json').version")
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: devenv-docs-${{ steps.version.outputs.VERSION }}
+          path: |
+            docs/dist/
+          retention-days: 7
+          if-no-files-found: error
