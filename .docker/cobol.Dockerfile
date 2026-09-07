@@ -15,21 +15,17 @@ ARG _DISTRO_VERSION
 ARG _USERNAME="developer"
 ARG _HOME="/home/${_USERNAME}"
 
-ARG _COB_CONFIG_DIR="${_HOME}/.config/gnucobol"
-
 COPY bin/pkg.sh /opt/devenv/bin/pkg.sh
 
 RUN export _DISTRO="${_DISTRO_NAME}" && . /opt/devenv/bin/pkg.sh \
     && pkg_update \
     && pkg_install gnucobol \
-    && pkg_clean \
-    && mkdir -p "${_COB_CONFIG_DIR}" \
-    && chown -R "${_USERNAME}:${_USERNAME}" "${_HOME}/.config"
+    && pkg_clean
 
-ENV COB_CONFIG_DIR="${_COB_CONFIG_DIR}"
 ENV DEVENV_COBOL_VERSION="${_VERSION}"
 
 USER "${_USERNAME}"
 WORKDIR "${_HOME}"
 
-VOLUME [ "${_COB_CONFIG_DIR}" ]
+# No VOLUME: gnucobol keeps no per-project dependency cache (an empty
+# COB_CONFIG_DIR would break the compiler's default.conf lookup).

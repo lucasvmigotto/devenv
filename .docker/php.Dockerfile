@@ -27,13 +27,14 @@ COPY --from=composer /usr/bin/composer /usr/local/bin/composer
 
 COPY bin/pkg.sh /opt/devenv/bin/pkg.sh
 
-# Runtime .so deps for the copied php binary (verify with `ldd` per base;
-# upstream php:cli builds are bookworm-based, adjust if trixie sonames drift).
+# Runtime .so deps for the copied php binary (from `ldd /usr/local/bin/php`).
+# -dev metapackages are used where runtime sonames drift across releases
+# (t64 transition on trixie/noble; libssl1.1 on bullseye).
 RUN export _DISTRO="${_DISTRO_NAME}" && . /opt/devenv/bin/pkg.sh \
     && pkg_update \
     && case "${_DISTRO_NAME}" in \
-         debian|ubuntu) pkg_install libzip4 libonig5 libxml2 libsqlite3-0 libcurl4 ;; \
-         archlinux)     pkg_install libzip oniguruma libxml2 sqlite curl ;; \
+         debian|ubuntu) pkg_install libreadline-dev libxml2 libssl-dev libsqlite3-dev zlib1g libcurl4-openssl-dev libonig5 libargon2-1 libsodium23 ;; \
+         archlinux)     pkg_install readline libxml2 openssl sqlite zlib curl oniguruma argon2 libsodium ;; \
        esac \
     && pkg_clean \
     && mkdir -p "${_COMPOSER_HOME}/cache" \
