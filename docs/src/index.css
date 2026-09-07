@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #080c14;
+  color: #e2e8f0;
+}
+
+pre code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
