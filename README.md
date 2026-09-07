@@ -47,7 +47,8 @@ Node images ship yarn (Berry) by default; `-npm` and `-pnpm` variants exist.
 
 java, go, rust, python (uv), dotnet, flutter, bun, zig, c, cpp, clojure, lua,
 elixir, haskell, node (yarn/npm/pnpm), assembly, cobol, julia, scala,
-delphi (free pascal), perl, php, r, ruby, smalltalk (pharo). Every image
+delphi (free pascal), perl, php, r, ruby, smalltalk (pharo), basic (yabasic),
+ada (gnat), lisp (sbcl). Every image
 declares `VOLUME`s for its dependency caches
 (owned by `developer`) so caches survive container rebuilds:
 
@@ -77,6 +78,9 @@ declares `VOLUME`s for its dependency caches
 | r        | `.R/library`, `.cache/R` |
 | ruby     | `.gem`, `.bundle` |
 | smalltalk (pharo) | `.cache/pharo` |
+| basic (yabasic) | *(none — stateless interpreter)* |
+| ada (gnat) | `.cache/ccache` |
+| lisp (sbcl) | `quicklisp`, `.cache/common-lisp` |
 
 > **Substitutions:** `delphi` ships the Free Pascal Compiler in
 > Delphi-compatibility mode (`{$mode delphi}`) — Embarcadero Delphi has no
@@ -90,10 +94,10 @@ is the source of truth):
 
 | Distros | Languages |
 | ------- | --------- |
-| debian, ubuntu, alpine, archlinux | assembly, bun, c, cpp, go, lua, perl, python, r, rust, zig |
+| debian, ubuntu, alpine, archlinux | assembly, bun, c, cpp, go, lisp, lua, perl, python, r, rust, zig |
 | debian, ubuntu, archlinux | clojure, delphi, java, julia, node, php, ruby, scala |
-| debian, ubuntu, alpine | cobol |
-| debian, ubuntu | dotnet, elixir, flutter, haskell, smalltalk |
+| debian, ubuntu, alpine | basic, cobol |
+| debian, ubuntu | ada, dotnet, elixir, flutter, haskell, smalltalk |
 
 ## Building locally
 

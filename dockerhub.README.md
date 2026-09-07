@@ -16,7 +16,7 @@ Ubuntu, Alpine, and Arch Linux.
 - **Persistent caches** — every language image declares `VOLUME`s for its
   dependency caches, mapped under `/home/developer`, so caches survive
   container rebuilds.
-- **25 languages across 4 distros**, built and pushed with multi-arch Buildx,
+- **28 languages across 4 distros**, built and pushed with multi-arch Buildx,
   `type=gha` layer caching, and SLSA provenance.
 - **Flutter with Android SDK** — Flutter images bundle a JDK and the Android
   SDK (commandline-tools, platforms, build-tools), pre-cached engine
@@ -70,6 +70,9 @@ Tag pattern: `{lang}-{version}-{distro}` (e.g. `go-1.26-debian`,
 | scala     | `3.7.4`, `2.13.18`    | debian, ubuntu, archlinux   | JDK 21, via Coursier               |
 | smalltalk | `130`, `120`          | debian, ubuntu              | Pharo; glibc-only                  |
 | zig       | `0.15.2`              | debian, ubuntu, alpine, archlinux |                               |
+| basic     | `2.90`                | debian, ubuntu, alpine      | Yabasic interpreter                |
+| ada       | `latest`              | debian, ubuntu              | GNAT (distro default version)      |
+| lisp      | `2.4`                 | debian, ubuntu, alpine, archlinux | SBCL + Quicklisp                 |
 
 Example variant tags: `node-24.20.0-npm-debian`, `flutter-3.47.0-jdk21-ubuntu`.
 
@@ -157,6 +160,9 @@ for its dependency caches:
 | r        | `.R/library`, `.cache/R` |
 | ruby     | `.gem`, `.bundle` |
 | smalltalk (pharo) | `.cache/pharo` |
+| basic (yabasic) | *(none — stateless interpreter)* |
+| ada (gnat) | `.cache/ccache` |
+| lisp (sbcl) | `quicklisp`, `.cache/common-lisp` |
 
 > **Substitutions:** `delphi` is Free Pascal in Delphi-compatibility mode
 > (Embarcadero Delphi has no headless Linux distribution); `smalltalk` is
