@@ -31,7 +31,7 @@ Tag pattern: `{distro}-{version}` (`sudo` by default; append `-doas`).
 
 | Distro    | Tags                                        |
 | --------- | ------------------------------------------- |
-| `debian`  | `trixie`, `bookworm`, `bullseye`            |
+| `debian`  | `trixie`, `bookworm`                        |
 | `ubuntu`  | `noble`, `jammy`                            |
 | `alpine`  | `3.23`, `3.22`, `3.21`                      |
 | `archlinux` | `base`, `base-devel`, `multilib-devel`    |
