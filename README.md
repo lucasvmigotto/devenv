@@ -10,6 +10,12 @@ a curated set of [Nerd Fonts](https://www.nerdfonts.com/)
 the [dottod](https://github.com/lucasvmigotto/dottod) dotfiles (a git
 submodule), so the images stay in sync with your workstation.
 
+## Documentation
+
+Full documentation — architecture, image catalog, usage, and development
+guides — is published at <https://devenv.lucasvmigotto.me> (version shown
+in the site footer tracks `docs/package.json`).
+
 ## Layout
 
 ```txt
