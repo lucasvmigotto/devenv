@@ -42,7 +42,10 @@ export function Architecture() {
             ["build/", "manifest.json (single source of truth) + gen-matrix.py"],
             ["dottod/", "git submodule — shell/fonts source of truth"],
             [".github/workflows/", "base → languages → description chain + reusable build-image"],
-            ["VERSION", "release tag source; ##VERSION## placeholder in dockerhub.README.md"],
+            [
+              "docs/package.json",
+              "release tag source (version field); ##VERSION## placeholder in dockerhub.README.md",
+            ],
           ]}
         />
       </Section>
@@ -121,9 +124,9 @@ export function Architecture() {
           <Badge>build/gen-matrix.py</Badge> renders rows like{" "}
           <Badge>flutter-3.47.0-jdk21-debian</Badge> or <Badge>node-24.20.0-npm-debian</Badge>{" "}
           (first variant entry = default, unsuffixed). Chain:{" "}
-          <Badge>Release (VERSION tag) → Base → Languages → Docker Hub description</Badge>, gated on
-          success at each hop (<Badge>needs.build.result == 'success'</Badge>), `max-parallel: 8`,
-          GHA cache read-only, SLSA attestations on every image.
+          <Badge>Release (package.json tag) → Base → Languages → Docker Hub description</Badge>,
+          gated on success at each hop (<Badge>needs.build.result == 'success'</Badge>),
+          `max-parallel: 8`, GHA cache read-only, SLSA attestations on every image.
         </p>
         <Callout kind="warn">
           Platform limits shape the design: more than three <Badge>workflow_run</Badge> hops never
