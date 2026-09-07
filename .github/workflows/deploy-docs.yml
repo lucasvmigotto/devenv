@@ -65,3 +65,37 @@ jobs:
             docs/dist/
           retention-days: 7
           if-no-files-found: error
+
+  cd:
+    name: CD (deploy to Cloudflare R2)
+    runs-on: ubuntu-24.04
+    needs: [ci]
+    permissions:
+      contents: read
+
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: devenv-docs-${{ needs.ci.outputs.version }}
+          path: .
+
+      - name: Validate R2 endpoint
+        run: |
+          ENDPOINT="${{ vars.CLOUDFLARE_R2_ENDPOINT_S3_CLIENT }}"
+          if [ -z "$ENDPOINT" ]; then
+            echo "::error::CLOUDFLARE_R2_ENDPOINT_S3_CLIENT repo variable is not set"
+            exit 1
+          fi
+          case "$ENDPOINT" in
+            https://*) echo "R2 endpoint OK: $ENDPOINT" ;;
+            *) echo "::error::CLOUDFLARE_R2_ENDPOINT_S3_CLIENT must start with https:// (got: $ENDPOINT)"; exit 1 ;;
+          esac
+
+      - name: Ensure AWS CLI
+        run: |
+          if ! command -v aws >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq awscli
+          fi
+          aws --version
