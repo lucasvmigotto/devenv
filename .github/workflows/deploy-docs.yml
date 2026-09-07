@@ -99,3 +99,21 @@ jobs:
             sudo apt-get install -y -qq awscli
           fi
           aws --version
+
+      - name: Sync static site to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_SECRET }}
+          AWS_DEFAULT_REGION: auto
+          AWS_EC2_METADATA_DISABLED: "true"
+        run: |
+          ENDPOINT="${{ vars.CLOUDFLARE_R2_ENDPOINT_S3_CLIENT }}"
+          BUCKET="${{ vars.CLOUDFLARE_R2_BUCKET_ID }}"
+          aws s3 sync dist/ "s3://${BUCKET}" \
+            --endpoint-url "${ENDPOINT}" \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable"
+          aws s3 cp dist/index.html "s3://${BUCKET}/index.html" \
+            --endpoint-url "${ENDPOINT}" \
+            --cache-control "no-cache" \
+            --content-type "text/html"
