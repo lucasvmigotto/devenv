@@ -100,7 +100,18 @@ jobs:
           fi
           aws --version
 
+      - name: Check R2 credentials
+        id: creds
+        run: |
+          if [ -n "${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}" ] && [ -n "${{ secrets.CLOUDFLARE_R2_ACCOUNT_SECRET }}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::R2 credentials not configured — skipping deploy"
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Sync static site to Cloudflare R2
+        if: steps.creds.outputs.present == 'true'
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_SECRET }}
