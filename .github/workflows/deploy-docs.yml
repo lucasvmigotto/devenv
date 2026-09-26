@@ -50,6 +50,8 @@ jobs:
 
       - name: Build
         run: bun run build
+        env:
+          VITE_APP_SITE_NAME: ${{ vars.VITE_APP_SITE_NAME }}
 
       - name: Set version
         id: version
