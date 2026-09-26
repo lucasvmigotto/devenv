@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - docs/**
+      - docs/site/**
       - build/manifest.json
       - .docker/*.Dockerfile
       - README.md
@@ -26,7 +26,7 @@ jobs:
       contents: read
     defaults:
       run:
-        working-directory: docs
+        working-directory: docs/site
     outputs:
       version: ${{ steps.version.outputs.VERSION }}
 
@@ -50,6 +50,8 @@ jobs:
 
       - name: Build
         run: bun run build
+        env:
+          VITE_APP_SITE_NAME: ${{ vars.VITE_APP_SITE_NAME }}
 
       - name: Set version
         id: version
@@ -62,7 +64,7 @@ jobs:
         with:
           name: devenv-docs-${{ steps.version.outputs.VERSION }}
           path: |
-            docs/dist/
+            docs/site/dist/
           retention-days: 7
           if-no-files-found: error
 
@@ -100,7 +102,18 @@ jobs:
           fi
           aws --version
 
+      - name: Check R2 credentials
+        id: creds
+        run: |
+          if [ -n "${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}" ] && [ -n "${{ secrets.CLOUDFLARE_R2_ACCOUNT_SECRET }}" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::R2 credentials not configured — skipping deploy"
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Sync static site to Cloudflare R2
+        if: steps.creds.outputs.present == 'true'
         env:
           AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_SECRET }}

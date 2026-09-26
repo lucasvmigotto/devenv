@@ -14,7 +14,7 @@ submodule), so the images stay in sync with your workstation.
 
 Full documentation — architecture, image catalog, usage, and development
 guides — is published at <https://devenv.lucasvmigotto.me> (version shown
-in the site footer tracks `docs/package.json`).
+in the site footer tracks `docs/site/package.json`).
 
 ## Layout
 

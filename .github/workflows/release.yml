@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - docs/package.json
+      - docs/site/package.json
 
 permissions:
   contents: write
@@ -19,7 +19,7 @@ jobs:
 
       - name: Read version
         id: version
-        run: echo "version=$(jq -r .version docs/package.json)" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(jq -r .version docs/site/package.json)" >> "$GITHUB_OUTPUT"
 
       - name: Create and push tag
         env:
