@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - docs/**
+      - docs/site/**
       - build/manifest.json
       - .docker/*.Dockerfile
       - README.md
@@ -26,7 +26,7 @@ jobs:
       contents: read
     defaults:
       run:
-        working-directory: docs
+        working-directory: docs/site
     outputs:
       version: ${{ steps.version.outputs.VERSION }}
 
@@ -62,7 +62,7 @@ jobs:
         with:
           name: devenv-docs-${{ steps.version.outputs.VERSION }}
           path: |
-            docs/dist/
+            docs/site/dist/
           retention-days: 7
           if-no-files-found: error
 
