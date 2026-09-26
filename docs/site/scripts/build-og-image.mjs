@@ -14,7 +14,7 @@ import { Resvg } from "@resvg/resvg-js";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = resolve(root, "public/images/og-image.svg");
 const output = resolve(root, "public/images/og-image.png");
-const fontDir = resolve(root, "public/assets/fonts");
+const fontDir = resolve(root, "fonts");
 
 const svg = readFileSync(source, "utf8");
 const png = new Resvg(svg, {
