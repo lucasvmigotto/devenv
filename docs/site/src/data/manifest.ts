@@ -1,4 +1,4 @@
-import rawManifest from "../../../build/manifest.json";
+import rawManifest from "../../../../build/manifest.json";
 
 export interface BaseEntry {
   name: string;
