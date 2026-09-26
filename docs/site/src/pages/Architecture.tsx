@@ -43,7 +43,7 @@ export function Architecture() {
             ["dottod/", "git submodule — shell/fonts source of truth"],
             [".github/workflows/", "base → languages → description chain + reusable build-image"],
             [
-              "docs/package.json",
+              "docs/site/package.json",
               "release tag source (version field); ##VERSION## placeholder in dockerhub.README.md",
             ],
           ]}
