@@ -11,6 +11,8 @@
   "license": "GPL-3.0-only",
   "scripts": {
     "dev": "vite",
+    "build-og-image": "bun scripts/build-og-image.mjs",
+    "prebuild": "bun scripts/build-og-image.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "biome check",
@@ -26,6 +28,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.1",
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.3.1",
     "@types/bun": "latest",
     "@types/react": "^19.2.17",
