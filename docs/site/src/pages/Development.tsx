@@ -59,9 +59,9 @@ export function Development() {
             generation is microseconds, not a hot path).
           </li>
           <li>
-            <Badge>docs/package.json</Badge> + <Badge>##VERSION##</Badge> — release tags come from
-            the package.json <Badge>version</Badge> field; the Docker Hub README is substituted at
-            sync time.
+            <Badge>docs/site/package.json</Badge> + <Badge>##VERSION##</Badge> — release tags come
+            from the package.json <Badge>version</Badge> field; the Docker Hub README is substituted
+            at sync time.
           </li>
         </ul>
       </Section>
