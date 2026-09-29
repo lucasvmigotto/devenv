@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => {
     "https://devenv.lucasvmigotto.me";
 
   return {
+    base: "/devenv/",
     plugins: [
       tailwindcss(),
       react(),
