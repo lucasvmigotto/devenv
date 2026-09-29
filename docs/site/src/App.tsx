@@ -8,9 +8,10 @@ import { Usage } from "./pages/Usage";
 
 // HashRouter: R2 static hosting has no SPA fallback rewrites,
 // so hash-based routing keeps deep links working with zero server config.
+// basename matches the docs-hub prefix (ADR 0004 in lucas/docs).
 export function App() {
   return (
-    <HashRouter>
+    <HashRouter basename="/devenv">
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Overview />} />
