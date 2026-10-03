@@ -12,7 +12,10 @@ export default defineConfig(({ mode }) => {
     "https://devenv.lucasvmigotto.me";
 
   return {
-    base: "/devenv/",
+    // Deployed under the docs-hub prefix /<repo>/ (ADR 0001 in lucas/docs).
+    // CI sets VITE_BASE_PATH from github.event.repository.name; the local
+    // default keeps `vite preview` at the same path as production.
+    base: process.env["VITE_BASE_PATH"] ?? "/devenv/",
     plugins: [
       tailwindcss(),
       react(),

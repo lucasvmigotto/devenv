@@ -11,7 +11,9 @@ import { Usage } from "./pages/Usage";
 // basename matches the docs-hub prefix (ADR 0004 in lucas/docs).
 export function App() {
   return (
-    <HashRouter basename="/devenv">
+    // Matches the docs-hub prefix (ADR 0004 in lucas/docs); derived from the
+    // Vite base so it tracks VITE_BASE_PATH.
+    <HashRouter basename={(import.meta.env?.["BASE_URL"] ?? "/").replace(/\/$/, "") || "/"}>
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Overview />} />
