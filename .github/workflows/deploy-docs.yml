@@ -51,7 +51,19 @@ jobs:
       - name: Build
         run: bun run build
         env:
-          VITE_APP_SITE_NAME: ${{ vars.VITE_APP_SITE_NAME }}
+          VITE_APP_SITE_NAME: https://docs.lucasvmigotto.me/${{ github.event.repository.name }}
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+
+      - name: Guard prefix-scoped R2 deploy
+        run: |
+          # Fitness function (ADR 0001 in lucas/docs): every R2 sync/cp must be
+          # prefix-scoped, so a project can never wipe the shared bucket root.
+          bad=$(grep -nE '^[[:space:]]+aws s3 (sync|cp)' .github/workflows/deploy-docs.yml | grep -v 'R2_PREFIX' || true)
+          if [ -n "$bad" ]; then
+            echo "::error::root-scoped R2 target detected — every deploy must use \$R2_PREFIX"
+            echo "$bad"
+            exit 1
+          fi
 
       - name: Set version
         id: version
@@ -74,6 +86,16 @@ jobs:
     needs: [ci]
     permissions:
       contents: read
+    env:
+      AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_SECRET }}
+      AWS_DEFAULT_REGION: auto
+      AWS_EC2_METADATA_DISABLED: "true"
+      R2_ENDPOINT: ${{ vars.CLOUDFLARE_R2_ENDPOINT_S3_CLIENT }}
+      R2_BUCKET: ${{ vars.CLOUDFLARE_R2_BUCKET_ID }}
+      # Per-project prefix in the shared docs-hub bucket (ADR 0001). The slug
+      # is the repository name — no per-repo configuration, cannot drift.
+      R2_PREFIX: /${{ github.event.repository.name }}/
 
     steps:
       - name: Download dist artifact
@@ -82,19 +104,26 @@ jobs:
           name: devenv-docs-${{ needs.ci.outputs.version }}
           path: dist
 
-      - name: Validate R2 endpoint
+      - name: Check R2 credentials
+        id: creds
         run: |
-          ENDPOINT="${{ vars.CLOUDFLARE_R2_ENDPOINT_S3_CLIENT }}"
-          if [ -z "$ENDPOINT" ]; then
-            echo "::error::CLOUDFLARE_R2_ENDPOINT_S3_CLIENT repo variable is not set"
-            exit 1
+          if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::R2 credentials not configured — skipping deploy"
+            echo "present=false" >> "$GITHUB_OUTPUT"
           fi
-          case "$ENDPOINT" in
-            https://*) echo "R2 endpoint OK: $ENDPOINT" ;;
-            *) echo "::error::CLOUDFLARE_R2_ENDPOINT_S3_CLIENT must start with https:// (got: $ENDPOINT)"; exit 1 ;;
-          esac
+
+      - name: Validate R2 configuration
+        if: steps.creds.outputs.present == 'true'
+        run: |
+          if [ -z "$R2_ENDPOINT" ]; then echo "::error::CLOUDFLARE_R2_ENDPOINT_S3_CLIENT repo variable is not set"; exit 1; fi
+          case "$R2_ENDPOINT" in https://*) ;; *) echo "::error::CLOUDFLARE_R2_ENDPOINT_S3_CLIENT must start with https:// (got: $R2_ENDPOINT)"; exit 1;; esac
+          if [ -z "$R2_BUCKET" ]; then echo "::error::CLOUDFLARE_R2_BUCKET_ID repo variable is not set"; exit 1; fi
+          case "$R2_PREFIX" in /*/) ;; *) echo "::error::R2_PREFIX must look like /<slug>/ (got: '$R2_PREFIX')"; exit 1;; esac
 
       - name: Ensure AWS CLI
+        if: steps.creds.outputs.present == 'true'
         run: |
           if ! command -v aws >/dev/null 2>&1; then
             sudo apt-get update -qq
@@ -102,34 +131,17 @@ jobs:
           fi
           aws --version
 
-      - name: Check R2 credentials
-        id: creds
-        run: |
-          if [ -n "${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}" ] && [ -n "${{ secrets.CLOUDFLARE_R2_ACCOUNT_SECRET }}" ]; then
-            echo "present=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "::warning::R2 credentials not configured — skipping deploy"
-            echo "present=false" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Sync static site to docs-hub prefix
         if: steps.creds.outputs.present == 'true'
-        env:
-          AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_SECRET }}
-          AWS_DEFAULT_REGION: auto
-          AWS_EC2_METADATA_DISABLED: "true"
         run: |
-          ENDPOINT="${{ vars.CLOUDFLARE_R2_ENDPOINT_S3_CLIENT }}"
-          BUCKET="${{ vars.CLOUDFLARE_R2_BUCKET_ID }}"
           # Prefix-scoped deploy into the shared docs-hub bucket (ADR 0001).
           # NEVER sync with --delete on the bucket root — that would wipe
           # the other apps' prefixes and the landing.
-          aws s3 sync dist/ "s3://${BUCKET}/devenv/" \
-            --endpoint-url "${ENDPOINT}" \
+          aws s3 sync dist/ "s3://${R2_BUCKET}${R2_PREFIX}" \
+            --endpoint-url "${R2_ENDPOINT}" \
             --delete \
             --cache-control "public, max-age=31536000, immutable"
-          aws s3 cp dist/index.html "s3://${BUCKET}/devenv/index.html" \
-            --endpoint-url "${ENDPOINT}" \
+          aws s3 cp dist/index.html "s3://${R2_BUCKET}${R2_PREFIX}index.html" \
+            --endpoint-url "${R2_ENDPOINT}" \
             --cache-control "no-cache" \
             --content-type "text/html"
