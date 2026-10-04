@@ -33,7 +33,7 @@ export function Overview() {
             only.
           </li>
           <li>
-            <strong>Developer experience</strong> — ZSH + Spaceship prompt and Nerd Fonts, driven by
+            <strong>Developer experience</strong> — plain-bash prompt and Nerd Fonts, driven by
             the <Badge>dottod</Badge> dotfiles submodule so images stay in sync with the
             maintainer's workstation.
           </li>

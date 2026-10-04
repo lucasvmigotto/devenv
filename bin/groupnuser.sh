@@ -12,7 +12,7 @@ _group_id=${1:?'group id required'}
 _user_id=${2:?'user id required'}
 _group_name=${3:?'group name required'}
 _user_name=${4:?'user name required'}
-_user_shell=${5:-/bin/zsh}
+_user_shell=${5:-/bin/bash}
 _priv_tool=${6:-sudo}
 _extra_groups=${7:-}
 

@@ -19,11 +19,10 @@ COPY dottod/ /opt/dottod/
 
 RUN sh /opt/devenv/bin/bootstrap.sh
 
-ENV SHELL=/bin/zsh
+ENV SHELL=/bin/bash
 ENV HOME=/home/${_USER_NAME}
-ENV ZSH=/home/${_USER_NAME}/.oh-my-zsh
 
 USER ${_USER_NAME}
 WORKDIR /home/${_USER_NAME}
 
-ENTRYPOINT ["zsh", "-l"]
+ENTRYPOINT ["bash", "-l"]

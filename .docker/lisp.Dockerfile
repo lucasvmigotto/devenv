@@ -25,7 +25,7 @@ RUN export _DISTRO="${_DISTRO_NAME}" && . /opt/devenv/bin/pkg.sh \
     && pkg_install sbcl curl \
     && pkg_clean \
     && curl -fsSLo /tmp/quicklisp.lisp https://beta.quicklisp.org/quicklisp.lisp \
-    && su "${_USERNAME}" -s /bin/zsh -c \
+    && su "${_USERNAME}" -s /bin/bash -c \
         "HOME=${_HOME} sbcl --non-interactive \
             --load /tmp/quicklisp.lisp \
             --eval '(quicklisp-quickstart:install :path \"${_QUICKLISP_HOME}/\")'" \

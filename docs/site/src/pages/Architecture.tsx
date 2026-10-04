@@ -4,9 +4,9 @@ import { baseTags } from "../data/manifest";
 const BASE_PIPELINE = `base image (debian/ubuntu/alpine/archlinux)
   └─ bootstrap.sh  → installs bash per distro (POSIX sh)
   └─ setup-base.sh → packages → groupnuser.sh (UID 1000 developer)
-  └─ dottod shell.sh → zsh + oh-my-zsh + Spaceship (as developer)
+  └─ dottod shell.sh → bash login shell + bashrc (as developer)
   └─ dottod fonts.sh → FiraCode / FiraMono / SymbolsOnly (global)
-  └─ USER developer · WORKDIR $HOME · ENTRYPOINT ["zsh", "-l"]`;
+  └─ USER developer · WORKDIR $HOME · ENTRYPOINT ["bash", "-l"]`;
 
 const GO_WALKTHROUGH = `# 1. Builder stage pulls the upstream toolchain…
 FROM golang:\${_VERSION} AS go

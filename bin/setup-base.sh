@@ -21,17 +21,17 @@ _priv_tool="${_PRIV_TOOL:-sudo}"
 _pkg_update
 case "${_DISTRO}" in
     debian|ubuntu)
-        _pkg_install git zsh curl ca-certificates fontconfig unzip sudo doas locales
+        _pkg_install git bash curl ca-certificates fontconfig unzip sudo doas locales
         ;;
     alpine)
-        _pkg_install git zsh curl ca-certificates fontconfig unzip sudo doas shadow
+        _pkg_install git bash curl ca-certificates fontconfig unzip sudo doas shadow
         ;;
     archlinux)
-        _pkg_install git zsh curl ca-certificates fontconfig unzip sudo doas which
+        _pkg_install git bash curl ca-certificates fontconfig unzip sudo doas which
         ;;
 esac
 
-# 2. locale (debian/ubuntu) so the dottod zshrc `LANG=en_US.UTF-8` resolves
+# 2. locale (debian/ubuntu) so the dottod bashrc `LANG=en_US.UTF-8` resolves
 case "${_DISTRO}" in
     debian|ubuntu)
         echo 'en_US.UTF-8 UTF-8' > /etc/locale.gen
@@ -39,14 +39,14 @@ case "${_DISTRO}" in
         ;;
 esac
 
-# 3. non-root user + passwordless escalation
-_zsh_bin="$(command -v zsh || echo /usr/bin/zsh)"
+# 3. non-root user + passwordless escalation (bash login shell)
+_bash_bin="$(command -v bash)"
 bash /opt/devenv/bin/groupnuser.sh \
     "${_group_id}" "${_user_id}" "${_group_name}" "${_user_name}" \
-    "${_zsh_bin}" "${_priv_tool}"
+    "${_bash_bin}" "${_priv_tool}"
 
-# 4. shell (zsh + oh-my-zsh + Spaceship) as the developer user
-su "${_user_name}" -s "${_zsh_bin}" -c \
+# 4. shell (plain bash + dottod bashrc) as the developer user
+su "${_user_name}" -s "${_bash_bin}" -c \
     "HOME=/home/${_user_name} _DOT_NO_PACKAGES=1 _DOT_TARGET_USER=${_user_name} bash /opt/dottod/bin/shell.sh"
 
 # 5. fonts (global) — FiraCode, FiraMono, NerdFontsSymbolsOnly

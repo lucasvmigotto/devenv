@@ -12,7 +12,7 @@ export function Usage() {
 
       <Section title="1. Run a base image">
         <CodeBlock
-          code={`# interactive zsh, non-root developer user
+          code={`# interactive bash, non-root developer user
 docker run -it --rm lucasvmigotto/devenv:latest
 
 # passwordless escalation inside the container

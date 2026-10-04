@@ -4,7 +4,7 @@ A suite of reproducible, non-root [DevContainer](https://containers.dev) base
 and language images, built on Debian, Ubuntu, Alpine, and Arch Linux.
 
 Each image ships a `developer` user (UID 1000) with passwordless escalation
-(`sudo` or `doas`), ZSH + [Spaceship](https://spaceship-prompt.sh/) prompt, and
+(`sudo` or `doas`), a plain-bash prompt, and
 a curated set of [Nerd Fonts](https://www.nerdfonts.com/)
 (FiraCode, FiraMono, NerdFontsSymbolsOnly). Shell and font setup are driven by
 the [dottod](https://github.com/lucasvmigotto/dottod) dotfiles (a git

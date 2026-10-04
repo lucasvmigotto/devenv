@@ -26,7 +26,7 @@ RUN export _DISTRO="${_DISTRO_NAME}" \
     && pkg_update \
     && pkg_install build-essential libgmp-dev libffi-dev libncurses-dev curl \
     && pkg_clean \
-    && su "${_USERNAME}" -s /bin/zsh -c \
+    && su "${_USERNAME}" -s /bin/bash -c \
         "curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org \
          | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_MINIMAL=1 BOOTSTRAP_HASKELL_GHC_VERSION=${_VERSION} sh" \
     && mkdir -p "${_STACK_ROOT}" "${_CABAL_DIR}" \

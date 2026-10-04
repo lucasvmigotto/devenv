@@ -10,7 +10,7 @@ Ubuntu, Alpine, and Arch Linux.
 
 - **Non-root by default** — a `developer` user (UID 1000) with passwordless
   `sudo` or `doas`.
-- **ZSH + Spaceship prompt** and Nerd Fonts (FiraCode, FiraMono,
+- **Plain-bash prompt** and Nerd Fonts (FiraCode, FiraMono,
   NerdFontsSymbolsOnly), driven by the
   [dottod](https://github.com/lucasvmigotto/dottod) dotfiles.
 - **Persistent caches** — every language image declares `VOLUME`s for its
@@ -89,7 +89,7 @@ as the single source of truth for the full tag matrix.
 ## Quick start
 
 ```bash
-# base image (interactive zsh)
+# base image (interactive bash)
 docker run -it --rm lucasvmigotto/devenv:latest
 
 # a language image

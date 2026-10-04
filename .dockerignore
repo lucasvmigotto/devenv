@@ -10,5 +10,10 @@ README.md
 build
 .dockerignore
 dottod/.git
-dottod/tui
 dottod/docs
+dottod/tests
+dottod/specs
+dottod/contracts
+dottod/CHANGELOG.md
+dottod/README.md
+dottod/Containerfile
