@@ -86,6 +86,9 @@ jobs:
     needs: [ci]
     permissions:
       contents: read
+    environment:
+      name: devenv-docs
+      url: https://docs.lucasvmigotto.me/devenv/
     env:
       AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_R2_ACCOUNT_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_SECRET }}
