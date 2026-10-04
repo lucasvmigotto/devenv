@@ -33,9 +33,9 @@ export function Overview() {
             only.
           </li>
           <li>
-            <strong>Developer experience</strong> — plain-bash prompt and Nerd Fonts, driven by
-            the <Badge>dottod</Badge> dotfiles submodule so images stay in sync with the
-            maintainer's workstation.
+            <strong>Developer experience</strong> — plain-bash prompt and Nerd Fonts, driven by the{" "}
+            <Badge>dottod</Badge> dotfiles submodule so images stay in sync with the maintainer's
+            workstation.
           </li>
           <li>
             <strong>Cache persistence</strong> — every language image declares <Badge>VOLUME</Badge>
