@@ -25,7 +25,9 @@ jobs:
         env:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
-          if git rev-parse "$VERSION" >/dev/null 2>&1; then
+          # Ask the remote: the checkout is shallow and carries no tags, so a
+          # local `git rev-parse` never sees an existing release tag.
+          if git ls-remote --exit-code --tags origin "refs/tags/$VERSION" >/dev/null; then
             echo "Tag $VERSION already exists, skipping."
             exit 0
           fi
