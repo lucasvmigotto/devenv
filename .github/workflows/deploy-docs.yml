@@ -10,6 +10,11 @@ on:
       - README.md
       - dockerhub.README.md
   workflow_dispatch:
+  # Redeploy once release.yml has tagged a new version, so the footer shows
+  # devenv@vX.Y.Z instead of the commit past the previous tag.
+  workflow_run:
+    workflows: [Release]
+    types: [completed]
 
 concurrency:
   group: deploy-docs
@@ -21,6 +26,7 @@ permissions:
 jobs:
   ci:
     name: CI (lint, typecheck, build)
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -33,6 +39,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # git describe --tags: the footer's versions and links
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
@@ -47,6 +55,9 @@ jobs:
 
       - name: Typecheck
         run: bun run typecheck
+
+      - name: Test
+        run: bun run test
 
       - name: Build
         run: bun run build
